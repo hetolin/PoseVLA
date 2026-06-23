@@ -1,0 +1,8 @@
+defaults:
+  - omni3d
+
+mode: "val"
+depth_full_prob: 1.0
+depth_sparse_prob: 0.0
+ray_prob: 1.0
+neg_prob: 0.0

@@ -1,0 +1,193 @@
+# =========================================================
+# Python
+# =========================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+develop-eggs/
+downloads/
+parts/
+sdist/
+wheels/
+share/python-wheels/
+pip-wheel-metadata/
+MANIFEST
+.installed.cfg
+
+# pyenv / pipenv / poetry
+.python-version
+Pipfile.lock
+poetry.lock
+
+# =========================================================
+# Virtual envs
+# =========================================================
+.env
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# =========================================================
+# Jupyter / IPython
+# =========================================================
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+*.ipynb
+
+# =========================================================
+# Testing / Coverage / Type checking
+# =========================================================
+.pytest_cache/
+.cache/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+nosetests.xml
+.hypothesis/
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# =========================================================
+# IDE / Editor
+# =========================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================================
+# Logs
+# =========================================================
+*.log
+logs/
+log/
+nohup.out
+
+# =========================================================
+# Hydra / Experiment outputs
+# =========================================================
+outputs/
+multirun/
+.hydra/
+hydra_outputs/
+
+# =========================================================
+# W&B
+# =========================================================
+wandb/
+.wandb/
+
+# =========================================================
+# Checkpoints / Models / Pretrained weights
+# =========================================================
+ckpt/
+ckpts/
+checkpoints/
+runs/
+exp/
+experiments/
+
+# 项目里的预训练权重目录（PaliGemma / π0 / π0.5 等）
+pretrain/
+pretrained/
+#google/paligemma-3b-pt-224/*.bin
+#google/paligemma-3b-pt-224/*.safetensors
+
+# 通用大模型权重 / 中间产物
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.onnx
+*.tflite
+*.pkl
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.tar
+*.tar.gz
+*.zip
+*.7z
+
+# =========================================================
+# Datasets / Caches
+# =========================================================
+data_cache/
+datasets/
+dataset/
+.cache_huggingface/
+.huggingface/
+
+# 数据集元信息（体积较大，建议外部存储 / LFS）
+config/dataset_meta/*.json
+
+# 训练过程中生成的统计/可视化产物
+statistic_all_datasets/
+train_AP/
+vis/
+visualization/
+visualizations/
+debug/
+debug_output/
+tmp/
+temp/
+
+# 大型图片 / 视频产物（请按需放开需要的）
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# =========================================================
+# DeepSpeed / Accelerate runtime files
+# =========================================================
+*.deepspeed
+ds_report.txt
+accelerate_config.yaml
+
+# =========================================================
+# Secrets / Credentials
+# =========================================================
+.netrc
+*.netrc
+.env.local
+.env.*.local
+secrets.yaml
+secrets.json
+*.pem
+*.key
+
+# =========================================================
+# OS / Misc
+# =========================================================
+*.bak
+*.tmp
+*.orig
+core
+core.*scripts/launch/start_h20.sh

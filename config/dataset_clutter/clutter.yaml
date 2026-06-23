@@ -1,0 +1,295 @@
+# BOP 数据集配置
+# 支持多数据集加载：ycbv, hb, lm, hot3d, tudl, icbin, hope, handal 等
+# 参数从 bop_toolkit/configs/train.yaml 迁移而来
+
+# 数据集根目录列表（按顺序对应下面的 id2name）
+data_root:
+  - "/home/hetolin/datasets/GraspClutter6D"
+
+# 数据集划分
+split: "train"  # "train" or "test"
+use_graspclutter6d: True
+gc6d_camera:
+  - realsense-d435 # realsense-d415 realsense-d435 azure-kinect zivid
+  - realsense-d415
+  - zivid
+  - azure-kinect
+# 图像分辨率
+image_size: 224
+vggt_image_size: 518
+img_history_size: 1
+num_cameras: 3
+
+# Crop 模式配置
+enable_random_crop: true  # true=随机crop（数据增强），false=确定性中心crop（默认，保持向后兼容）
+
+# 深度处理参数
+depth_max_percentile: 99.0
+depth_min_percentile: 1.0
+depth_max_value: 100.0  # 最大深度距离（米）
+min_distance: 0.1       # 最小深度距离（米）
+metric_scale: 1.0       # 度量缩放因子
+unit_scale: 1000.0      # 单位转换：mm->m (1000.0) 或 0.1mm->m (10000.0)
+
+# 数据加载选项
+load_depth: true
+load_masks: false
+load_gt: true
+max_samples: null  # null表示加载所有样本
+max_retries: 10
+
+# 每个数据集的 ID 到名称映射（列表形式，按 data_root 顺序）
+id2name:
+  # clutter6d
+  - 1: banana
+    2: apple
+    3: pear
+    4: strawberry
+    5: orange
+    6: peach
+    7: eggplant
+    8: lemon
+    9: can
+    10: cracker box
+    11: sugar box
+    12: mustard bottle
+    13: tomato soup can
+    14: canned tuna
+    15: chocolate pudding box
+    16: strawberry jello box
+    17: spam can
+    18: red cardboard box
+    19: sponge
+    20: fork
+    21: knife
+    22: plastic spoon
+    23: kitchen spatula
+    24: pot
+    25: enamel camping cup
+    26: red plate
+    27: red bowl
+    28: blue plastic pot
+    29: dish soap bottle
+    30: scissors
+    31: marker pen
+    32: wrench
+    33: screwdriver
+    34: screwdriver
+    35: spring clamp
+    36: spring clamp
+    37: wooden block
+    38: Sheep Horn Hammer
+    39: Electric drill
+    40: padlock
+    41: canned mushrooms
+    42: tuna can
+    43: yogurt cup
+    44: canned peaches
+    45: canned pineapple
+    46: canned cherries
+    47: canned corn
+    48: canned green beans
+    49: canned peas and carrots
+    50: tomato sauce can
+    51: alphabet soup can
+    52: parmesan cheese can
+    53: chocolate pudding box
+    54: butter box
+    55: cream cheese box
+    56: raisins box
+    57: popcorn box
+    58: milk carton
+    59: orange juice carton
+    60: granola bars box
+    61: macaroni and cheese box
+    62: oatmeal raisin cookies box
+    63: spaghetti box
+    64: salad dressing bottle
+    65: bottle
+    66: bbq sauce bottle
+    67: ketchup bottle
+    68: mustard bottle
+    69: crayon box
+    70: sticky note box
+    71: product
+    72: game cartridge
+    73: screwdriver set
+    74: play doh
+    75: marker box
+    76: box
+    77: package
+    78: mesh pen holder
+    79: glue bottle
+    80: computer mouse
+    81: computer mouse
+    82: face cream tube
+    83: hair care tube
+    84: shampoo tube
+    85: glue stick
+    86: body wash bottle
+    87: Blue cap
+    88: tape roll
+    89: ice tray
+    90: mouthwash bottle
+    91: bread loaf
+    92: toy zebra
+    93: toy Elephant
+    94: toy gorilla
+    95: toy lion
+    96: toy dragon
+    97: soap box
+    98: toothpaste box
+    99: plastic clamp
+    100: toy
+    101: toy part
+    102: plastic connector
+    103: toy
+    104: plastic clamp
+    105: plastic part
+    106: pipe connector
+    107: plastic mechanism
+    108: plastic bracket
+    109: plastic mechanism
+    110: plastic mechanism
+    111: plastic mechanism
+    112: book
+    113: book
+    114: glue tube
+    115: utility knife
+    116: stapler
+    117: glue stick
+    118: tissue box
+    119: notebook
+    120: game controller
+    121: keyboard
+    122: mug
+    123: speaker
+    124: headphones
+    125: remote control
+    126: camera
+    127: sneaker
+    128: sneaker
+    129: high heel
+    130: leather shoe
+    131: slipper
+    132: sneaker
+    133: pink sneaker
+    134: colorful sneaker
+    135: crocs
+    136: marker package
+    137: marker set
+    138: dog toy package
+    139: toy car package
+    140: pet collar package
+    141: tape runner package
+    142: wrench
+    143: pen package
+    144: battery package
+    145: electric shaver package
+    146: toy package
+    147: CPU box
+    148: SSD box
+    149: software box
+    150: cable box
+    151: box
+    152: electronic device box
+    153: colored pencils box
+    154: cable package
+    155: package
+    156: food seasoning bag
+    157: sponge package
+    158: sponge package
+    159: cable package
+    160: cleaning cloth package
+    161: toy figurines package
+    162: almond bag
+    163: colored pencils tube
+    164: white tube
+    165: taco seasoning can
+    166: supplement bottle
+    167: vitamin bottle
+    168: vitamin bottle
+    169: omega3 bottle
+    170: supplement bottle
+    171: white bottle
+    172: supplement bottle
+    173: mechanical bracket
+    174: bearing housing
+    175: L bracket
+    176: L bracket
+    177: L bracket
+    178: bearing
+    179: pillow block bearing
+    180: rubber stopper
+    181: pin
+    182: power adapter
+    183: battery
+    184: pulley
+    185: adapter
+    186: bearing housing
+    187: pipe flange
+    188: dispensing needle
+    189: diode
+    190: digital multimeter
+    191: spirit level
+    192: laser distance meter
+    193: pliers
+    194: pliers
+    195: staple gun
+    196: hole saw
+    197: adhesive bottle
+    198: duct tape
+    199: tape measure
+    200: infrared thermometer
+
+
+
+
+
+# 摄像头配置（用于模拟多视角）
+camera_configs:
+  - name: "top_head"
+    crop_scale: [0.90, 1.0]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_left"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_right"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+# 缓存配置
+use_cache: true
+cache_index_path: "./cache/bop_index.json"  # 多数据集会自动创建 bop_index_ycbv.json, bop_index_hb.json 等
+
+use_preprocessed_grasps: True
+preprocessed_grasps_dir: "/home/tione/notebook/workspace/shanejhuang/pi0_3d_new/cache/filtered_grasps_v2"
+
+
+# Grasp 数据加载配置（适用于 GraspClutter6D）
+load_grasps: False  # 是否加载抓取数据
+grasp_format: "6d"  # 抓取格式：6d
+fric_coef_thresh: 0.4  # 摩擦系数阈值
+remove_invisible_grasps: True  # 是否移除不可见的抓取
+max_grasps_per_object: 1  # 每个物体最多保留的 grasp 数量（推荐：50-200）
+grasp_selection_mode: "top-k"  # grasp 选择模式: "top-k"（按分数）或 "random"（随机）
+use_grasp_prob: 0.0
+
+# 性能优化选项
+max_sample_points: 100  # 限制每个物体的采样点数量（null=不限制，推荐：30-50 用于加速训练）
+                         # 示例：50 可减少 50% 计算量，30 可减少 70% 计算量
+
+depth_full_prob: ${depth_full_prob}
+depth_sparse_prob: ${depth_sparse_prob}
+ray_prob: ${ray_prob}
+neg_prob: ${neg_prob}
+# # 场景过滤（可选）
+# scene_ids: null  # null 表示使用所有场景，或指定列表 [0, 1, 2, ...]
+
+# # 数据增强参数（从 bop_toolkit 迁移）
+# perturbation_box_prompt: true
+# perturbation_factor: 0.3
+# clamp_bbox_2d: true
+
+# # 像素归一化参数（SAM标准）
+# pixel_mean: [123.675, 116.28, 103.53]
+# pixel_std: [58.395, 57.12, 57.375]

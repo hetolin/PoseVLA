@@ -1,0 +1,45 @@
+# Omni6D 检测数据集配置，可通过 meta_patterns 控制参与的子集
+type: omni6d
+
+data_root: "/home/hetolin/datasets/omni6d"
+#meta_patterns:
+#  # - "SOPE_test_multi_hotdog/*/*_meta.json"
+#  - "SOPE_test_multi_hotdog/*/*/*/*/*_meta.json"
+#  # - "ROPE_single2/*/*_meta.json"
+
+meta_patterns:
+  - "ROPE/*/*_meta.json"
+  - "SOPE/*/*/*/*/*_meta.json"
+
+image_size: 224
+vggt_image_size: 518
+img_history_size: 1
+num_cameras: 3
+
+enable_random_crop: true  # true=随机crop（数据增强），false=确定性中心crop（默认，保持向后兼容）
+
+depth_max_percentile: 95.0
+depth_min_percentile: 1.0
+depth_max_value: 1000.0
+max_samples: null
+max_retries: 10
+
+depth_full_prob: ${depth_full_prob}
+depth_sparse_prob: ${depth_sparse_prob}
+ray_prob: ${ray_prob}
+neg_prob: ${neg_prob}
+
+# 摄像头配置（用于模拟多视角）
+camera_configs:
+  - name: "top_head"
+    crop_scale: [0.90, 1.0]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_left"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_right"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+
+use_cache: true
+cache_index_path: "./cache/omni6d_index.json"

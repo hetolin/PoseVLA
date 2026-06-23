@@ -1,0 +1,266 @@
+# BOP 数据集配置
+# 支持多数据集加载：ycbv, hb, lm, hot3d, tudl, icbin, hope, handal 等
+# 参数从 bop_toolkit/configs/train.yaml 迁移而来
+
+# 数据集根目录列表（按顺序对应下面的 id2name）
+data_root:
+  - "/home/hetolin/datasets/bop/ycbv"
+  - "/home/hetolin/datasets/bop/hb"
+  - "/home/hetolin/datasets/bop/lm"
+  - "/home/hetolin/datasets/bop/hot3d"
+  - "/home/hetolin/datasets/bop/tudl"
+  - "/home/hetolin/datasets/bop/icbin"
+  - "/home/hetolin/datasets/bop/hope"
+  - "/home/hetolin/datasets/bop/handal"
+
+# 数据集划分
+split: "test"  # "train_pbr" or "train" or "test"
+
+# 图像分辨率
+image_size: 224
+vggt_image_size: 518
+img_history_size: 1
+num_cameras: 3
+
+# Crop 模式配置
+enable_random_crop: true  # true=随机crop（数据增强），false=确定性中心crop（默认，保持向后兼容）
+
+# 深度处理参数
+depth_max_percentile: 99.0
+depth_min_percentile: 1.0
+depth_max_value: 100.0  # 最大深度距离（米）
+min_distance: 0.1       # 最小深度距离（米）
+metric_scale: 1.0       # 度量缩放因子
+unit_scale: 1000.0      # 单位转换：mm->m (1000.0) 或 0.1mm->m (10000.0)
+
+# 数据加载选项
+load_depth: true
+load_masks: false
+load_gt: true
+max_samples: null  # null表示加载所有样本
+max_retries: 10
+
+depth_full_prob: ${depth_full_prob}
+depth_sparse_prob: ${depth_sparse_prob}
+ray_prob: ${ray_prob}
+neg_prob: ${neg_prob}
+# 每个数据集的 ID 到名称映射（列表形式，按 data_root 顺序）
+id2name:
+  # ycbv 数据集的映射（YCB-Video）
+  - 1: "master chef can"
+    2: "cracker box"
+    3: "sugar box"
+    4: "tomato soup can"
+    5: "mustard bottle"
+    6: "tuna fish can"
+    7: "pudding box"
+    8: "gelatin box"
+    9: "potted meat can"
+    10: "banana"
+    11: "pitcher base"
+    12: "bleach cleanser"
+    13: "bowl"
+    14: "mug"
+    15: "power drill"
+    16: "wood block"
+    17: "scissors"
+    18: "large marker"
+    19: "large clamp"
+    20: "large clamp"
+    21: "foam brick"
+
+  # hb 数据集的映射（HomebrewedDB）
+  - 1: "teddy bear"
+    2: "benchvise"
+    3: "toy car"
+    4: "toy cow"
+    5: "toy cow"
+    6: "cup"
+    7: "power drill"
+    8: "bunny"
+    9: "hole punch"
+    10: "gear"
+    11: "gear housing"
+    12: "electrical relay"
+    13: "packaged snack bar"
+    14: "capacitor"
+    15: "valve"
+    16: "valve block"
+    17: "electrical switch"
+    18: "biscuit box"
+    19: "toy"
+    20: "toy dog"
+    21: "phone"
+    22: "wild boar toy"
+    23: "pug dog toy"
+    24: "radio"
+    25: "toy race car"
+    26: "Red scooter"
+    27: "High heel shoe"
+    28: "dinosaur toy"
+    29: "tea box"
+    30: "dinosaur toy"
+    31: "toy figure"
+    32: "vintage race car"
+    33: "rabbit figurine"
+
+  # lm 数据集的映射（LineMOD）
+  - 1: "ape"
+    2: "benchvise"
+    3: "bowl"
+    4: "camera"
+    5: "can"
+    6: "cat"
+    7: "cup"
+    8: "driller"
+    9: "duck"
+    10: "eggbox"
+    11: "glue"
+    12: "holepuncher"
+    13: "iron"
+    14: "lamp"
+    15: "phone"
+
+  # hot3d 数据集的映射（HOT3D）
+  - 1: "ceramic cup"
+    2: "wooden bowl"
+    3: "Plate"
+    4: "wooden spatula"
+    5: "spoon"
+    6: "slotted spatula"
+    7: "Pot"
+    8: "ceramic mug"
+    9: "white ceramic cup"
+    10: "food can"
+    11: "food can"
+    12: "food can"
+    13: "Squeeze Bottle"
+    14: "Sauce Bottle"
+    15: "Sauce Bottle"
+    16: "Jug"
+    17: "Milk Carton"
+    18: "Orange Juice Carton"
+    19: "Jug"
+    20: "Food Packaging"
+    21: "Food Packaging"
+    22: "Dumbbell"
+    23: "Sunglasses"
+    24: "Smartphone"
+    25: "Wooden Box"
+    26: "Architectural Model"
+    27: "Dinosaur Figure"
+    28: "smartphone"
+    29: "Blackboard eraser"
+    30: "Puzzle Cube"
+    31: "Mouse"
+    32: "Gel Pen"
+    33: "Remote Control"
+
+  # tudl 数据集的映射（TUD-L）
+  - 1: "dinosaur toy"
+    2: "white frog toy"
+    3: "watering can"
+
+  # icbin 数据集的映射（IC-BIN）
+  - 1: "Coffee Cup"
+    2: "Juice Carton"
+
+  # hope 数据集的映射（HOPE）
+  - 1: "Alphabet Soup"
+    2: "BBQ Sauce"
+    3: "Butter"
+    4: "Cherries"
+    5: "Chocolate Pudding"
+    6: "Cookies"
+    7: "Corn"
+    8: "Cream Cheese"
+    9: "Granola Bars"
+    10: "Green Beans"
+    11: "Ketchup"
+    12: "Macaroni&Cheese"
+    13: "Mayo"
+    14: "Milk"
+    15: "Mushrooms"
+    16: "Mustard"
+    17: "Orange Juice"
+    18: "Parmesan"
+    19: "Peaches"
+    20: "Peas&Carrots"
+    21: "Pineapple"
+    22: "Popcorn"
+    23: "Raisins"
+    24: "Salad Dressing"
+    25: "Spaghetti"
+    26: "TomatoSauce"
+    27: "Tuna"
+    28: "Yogurt"
+
+  # handal 数据集的映射（HO-3D/HandAL）
+  - 1: "hammer"
+    2: "hammer"
+    3: "hammer"
+    4: "hammer"
+    5: "hammer"
+    6: "hammer"
+    7: "hammer"
+    8: "hammer"
+    9: "hammer"
+    10: "spatula"
+    11: "spatula"
+    12: "ladle"
+    13: "utensil"
+    14: "ladle"
+    15: "ladle"
+    16: "ladle"
+    17: "pot"
+    18: "pot"
+    19: "pot"
+    20: "power drill"
+    21: "power drill"
+    22: "power drill"
+    23: "power drill"
+    24: "power drill"
+    25: "power drill"
+    26: "spatula"
+    27: "spatula"
+    28: "spatula"
+    29: "spatula"
+    30: "strainer"
+    31: "strainer"
+    32: "strainer"
+    33: "strainer"
+    34: "strainer"
+    35: "whisk"
+    36: "whisk"
+    37: "whisk"
+    38: "whisk"
+    39: "whisk"
+    40: "whisk"
+
+# 摄像头配置（用于模拟多视角）
+camera_configs:
+  - name: "top_head"
+    crop_scale: [0.90, 1.0]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_left"
+    crop_scale: [0.15, 0.65]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_right"
+    crop_scale: [0.15, 0.65]
+    aspect_ratio: [1.33, 1.33]
+
+# 缓存配置
+use_cache: true
+cache_index_path: "./cache/bop_index.json"  # 多数据集会自动创建 bop_index_ycbv.json, bop_index_hb.json 等
+cache_category_path: ""
+# # 场景过滤（可选）
+# scene_ids: null  # null 表示使用所有场景，或指定列表 [0, 1, 2, ...]
+
+# # 数据增强参数（从 bop_toolkit 迁移）
+# perturbation_box_prompt: true
+# perturbation_factor: 0.3
+# clamp_bbox_2d: true
+
+# # 像素归一化参数（SAM标准）
+# pixel_mean: [123.675, 116.28, 103.53]
+# pixel_std: [58.395, 57.12, 57.375]

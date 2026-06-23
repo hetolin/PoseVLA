@@ -1,0 +1,4 @@
+defaults:
+  - omni3d
+
+mode: "train"

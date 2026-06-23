@@ -1,0 +1,505 @@
+# Omni3D 数据集配置
+# 基于 DetAny3D 的 pickle 格式
+
+# ============================================================
+# 图像参数
+# ============================================================
+image_size: 224              # 最终输出图像尺寸
+vggt_image_size: 518         # VGGT 图像尺寸
+img_history_size: 1          # 历史图像帧数（通常为 1）
+num_cameras: 3               # 多相机数量（固定为 3，用于格式统一）
+
+enable_random_crop: true  # true=随机crop（数据增强），false=确定性中心crop（默认，保持向后兼容）
+
+# 摄像头配置（用于模拟多视角）
+camera_configs:
+  - name: "top_head"
+    crop_scale: [0.90, 1.0]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_left"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+  - name: "hand_right"
+    crop_scale: [0.25, 0.55]
+    aspect_ratio: [1.33, 1.33]
+
+# 数据加载选项
+max_retries: 100
+
+# ============================================================
+# 路径替换配置（用于跨机器迁移 pkl 数据）
+# ============================================================
+# pkl 中存储的旧路径前缀 → 替换为新的 data_root
+# 例如 pkl 中 img_path = "/home/tione/.../omni3d_dataset/datasets/objectron/train/xxx.jpg"
+# 替换后 img_path = "/home/hetolin/datasets/omni3d_dataset/datasets/objectron/train/xxx.jpg"
+old_data_root: "/home/tione/notebook/workspace/shanejhuang/omni3d_dataset"
+data_root: "/home/hetolin/datasets/omni3d_dataset"
+
+depth_full_prob: ${depth_full_prob}
+depth_sparse_prob: ${depth_sparse_prob}
+ray_prob: ${ray_prob}
+neg_prob: ${neg_prob}
+# ============================================================
+# 数据集模式
+# ============================================================
+mode: "train"                # 数据集模式: "train" 或 "val"
+
+# ============================================================
+# 调试选项
+# ============================================================
+debug: false                 # 是否开启调试模式（打印详细错误信息）
+
+# ============================================================
+# 数据集配置
+# ============================================================
+# dataset.train 和 dataset.val 定义实际的数据集
+# 每个数据集是一个字典，包含以下字段：
+#   - pkl_path: pickle 文件路径（必需）
+#   - metric_scale: 深度度量缩放因子（可选，默认 1.0）
+#   - max_distance: 最大深度距离，单位米（可选）
+#   - min_distance: 最小深度距离，单位米（可选）
+#   - vggt_resolution: VGGT 图像分辨率（可选，默认 518）
+
+dataset:
+  # ============================================================
+  # 训练数据集（基于 DetAny3D train2_multi_filtered.yaml）
+  # ============================================================
+  train:
+    # Objectron 数据集
+    objectron:
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/Objectron_train_multi_filtered.pkl"
+      metric_scale: 1.0         # 已经是米单位
+      max_distance: 10.0        # 最大深度 10 米
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+    # # ARKitScenes 数据集
+    arkitscenes:
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/ARKitScenes_train_multi_filtered.pkl"
+      metric_scale: 1.0         # 已经是米单位
+      max_distance: 10.0        # 最大深度 10 米
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+    # # nuScenes 数据集（室外场景）
+#    nuscenes:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/nuScenes_train_multi_filtered.pkl"
+#      metric_scale: 218.45      # nuScenes 特殊的度量缩放
+#      max_distance: 100.0       # 最大深度 100 米（室外场景）
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+
+    # # Hypersim 数据集（合成室内场景）
+#    hypersim:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/Hypersim_train_multi_filtered.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 35.0        # 最大深度 35 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+
+    # KITTI 数据集（室外驾驶场景）
+#    kitti:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/KITTI_train_multi_filtered.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 100.0       # 最大深度 100 米（室外场景）
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+
+    # SUNRGBD 数据集（室内场景）
+    sunrgbd:
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/SUNRGBD_train_multi_filtered.pkl"
+      metric_scale: 10000.0     # PNG 深度图: 0.1mm -> m (10000 = 1/0.0001)
+      max_distance: 5.0         # 最大深度 5 米（室内场景）
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+  # ============================================================
+  # 验证数据集
+  # ============================================================
+  val:
+    # Objectron 数据集
+    objectron:
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/Objectron_val.pkl"
+      metric_scale: 1.0         # 已经是米单位
+      max_distance: 10.0        # 最大深度 10 米
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+    # # ARKitScenes 数据集
+#    arkitscenes:
+#      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/ARKitScenes_val.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 10.0        # 最大深度 10 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+
+#    # KITTI 验证集（从 train2_multi_filtered.yaml 中的 val 配置）
+#    # 注意：原配置中 val.nuscenes 使用了 KITTI_val pkl 路径，这里保持原样
+#    nuscenes:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw/nuScenes_val.pkl"
+#      metric_scale: 218.45      # 与 nuScenes 相同的缩放
+#      max_distance: 100.0       # 最大深度 100 米
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+#
+#    # Hypersim 数据集（合成室内场景）
+#    hypersim:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/Hypersim_val.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 35.0        # 最大深度 35 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+#
+#    # KITTI 数据集（室外驾驶场景）
+#    kitti:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/KITTI_val.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 100.0       # 最大深度 100 米（室外场景）
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+
+    # SUNRGBD 数据集（室内场景）
+    sunrgbd:
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hjs/SUNRGBD_val.pkl"
+      metric_scale: 10000.0     # PNG 深度图: 0.1mm -> m (10000 = 1/0.0001)
+      max_distance: 5.0         # 最大深度 5 米（室内场景）
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+  test:
+#    # Objectron 数据集
+#    objectron:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/Objectron_test.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 10.0        # 最大深度 10 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+
+#    # ARKitScenes 数据集
+#    arkitscenes:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/ARKitScenes_test.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 10.0        # 最大深度 10 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+#
+#    # KITTI 验证集（从 train2_multi_filtered.yaml 中的 val 配置）
+#    # 注意：原配置中 val.nuscenes 使用了 KITTI_val pkl 路径，这里保持原样
+#    nuscenes:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw/nuScenes_test.pkl"
+#      metric_scale: 218.45      # 与 nuScenes 相同的缩放
+#      max_distance: 100.0       # 最大深度 100 米
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+#
+#    # Hypersim 数据集（合成室内场景）
+#    hypersim:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/Hypersim_test.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 35.0        # 最大深度 35 米
+#      min_distance: 0.01        # 最小深度 0.01 米
+#      vggt_resolution: 518
+#
+#    # KITTI 数据集（室外驾驶场景）
+#    kitti:
+#      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/KITTI_test.pkl"
+#      metric_scale: 1.0         # 已经是米单位
+#      max_distance: 100.0       # 最大深度 100 米（室外场景）
+#      min_distance: 0.1         # 最小深度 0.1 米
+#      vggt_resolution: 518
+#
+    # SUNRGBD 数据集（室内场景）
+    sunrgbd:
+      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/SUNRGBD_test.pkl"
+      metric_scale: 10000.0     # PNG 深度图: 0.1mm -> m (10000 = 1/0.0001)
+      max_distance: 5.0         # 最大深度 5 米（室内场景）
+      min_distance: 0.01        # 最小深度 0.01 米
+      vggt_resolution: 518
+
+id2name:
+  0: 'pedestrian'
+  1: 'car'
+  2: 'dontcare'
+  3: 'cyclist'
+  4: 'van'
+  5: 'truck'
+  6: 'tram'
+  7: 'person'
+  8: 'traffic cone'
+  9: 'barrier'
+  10: 'motorcycle'
+  11: 'bicycle'
+  12: 'bus'
+  13: 'trailer'
+  14: 'books'
+  15: 'bottle'
+  16: 'camera'
+  17: 'cereal box'
+  18: 'chair'
+  19: 'cup'
+  20: 'laptop'
+  21: 'shoes'
+  22: 'towel'
+  23: 'blinds'
+  24: 'window'
+  25: 'lamp'
+  26: 'shelves'
+  27: 'mirror'
+  28: 'sink'
+  29: 'cabinet'
+  30: 'bathtub'
+  31: 'door'
+  32: 'toilet'
+  33: 'desk'
+  34: 'box'
+  35: 'bookcase'
+  36: 'picture'
+  37: 'table'
+  38: 'counter'
+  39: 'bed'
+  40: 'night stand'
+  41: 'dresser'
+  42: 'pillow'
+  43: 'sofa'
+  44: 'television'
+  45: 'floor mat'
+  46: 'curtain'
+  47: 'clothes'
+  48: 'stationery'
+  49: 'refrigerator'
+  50: 'board'
+  51: 'kitchen pan'
+  52: 'bin'
+  53: 'stove'
+  54: 'microwave'
+  55: 'plates'
+  56: 'bowl'
+  57: 'oven'
+  58: 'vase'
+  59: 'faucet'
+  60: 'tissues'
+  61: 'machine'
+  62: 'printer'
+  63: 'monitor'
+  64: 'podium'
+  65: 'cart'
+  66: 'projector'
+  67: 'electronics'
+  68: 'computer'
+  69: 'air conditioner'
+  70: 'drawers'
+  71: 'coffee maker'
+  72: 'toaster'
+  73: 'potted plant'
+  74: 'painting'
+  75: 'bag'
+  76: 'tray'
+  77: 'keyboard'
+  78: 'blanket'
+  79: 'rack'
+  80: 'phone'
+  81: 'mouse'
+  82: 'fire extinguisher'
+  83: 'toys'
+  84: 'ladder'
+  85: 'fan'
+  86: 'glass'
+  87: 'clock'
+  88: 'toilet paper'
+  89: 'closet'
+  90: 'fume hood'
+  91: 'utensils'
+  92: 'soundsystem'
+  93: 'todo'
+  94: 'shower curtain'
+  95: 'remote'
+  96: 'pen'
+  97: 'fireplace'
+  98: 'trash can'
+  99: 'table lamp'
+  100: 'kitchen cabinet'
+  101: 'fridge'
+  102: 'object'
+  103: 'dining table'
+  104: 'soap dish'
+  105: 'kettle'
+  106: 'wall'
+  107: 'pipe'
+  108: 'hood'
+  109: 'sponge'
+  110: 'floor'
+  111: 'shoe'
+  112: 'heater'
+  113: 'oven glove'
+  114: 'radiator'
+  115: 'menu'
+  116: 'frame'
+  117: 'commode'
+  118: 'tv'
+  119: 'plate'
+  120: 'coffee table'
+  121: 'tv stand'
+  122: 'decoration'
+  123: 'plant'
+  124: 'stool'
+  125: 'treadmill'
+  126: 'shelf'
+  127: 'item'
+  128: 'showcase'
+  129: 'couch'
+  130: 'pile of candles'
+  131: 'ceiling'
+  132: 'wardrobe'
+  133: 'nightstand'
+  134: 'light'
+  135: 'ventilator'
+  136: 'flowers'
+  137: 'ottoman'
+  138: 'doorframe'
+  139: 'shower door'
+  140: 'bidet'
+  141: 'shower wall'
+  142: 'shower floor'
+  143: 'bath cabinet'
+  144: 'clothes dryer'
+  145: 'garbage bin'
+  146: 'hand dryer'
+  147: 'cupboard'
+  148: 'side table'
+  149: 'armchair'
+  150: 'gymnastic ball'
+  151: 'clutter'
+  152: 'firewood box'
+  153: 'bucket'
+  154: 'drum'
+  155: 'tree decoration'
+  156: 'rocking chair'
+  157: 'couch table'
+  158: 'bench'
+  159: 'jar'
+  160: 'windowsill'
+  161: 'garbage'
+  162: 'kitchen counter'
+  163: 'telephone'
+  164: 'cutting board'
+  165: 'paper towel'
+  166: 'basket'
+  167: 'shoe rack'
+  168: 'kitchen object'
+  169: 'coffee machine'
+  170: 'container'
+  171: 'backpack'
+  172: 'suitcase'
+  173: 'toilet brush'
+  174: 'toilet paper dispenser'
+  175: 'tube'
+  176: 'socket'
+  177: 'tennis raquet'
+  178: 'stand'
+  179: 'pile of papers'
+  180: 'pack'
+  181: 'cap'
+  182: 'ball'
+  183: 'pc'
+  184: 'folder'
+  185: 'pile of books'
+  186: 'kitchen hood'
+  187: 'computer desk'
+  188: 'armoire'
+  189: 'storage bin'
+  190: 'cleanser'
+  191: 'carpet'
+  192: 'chest'
+  193: 'pot'
+  194: 'stuffed animal'
+  195: 'scale'
+  196: 'pile of bottles'
+  197: 'basin'
+  198: 'bar'
+  199: 'kitchen appliance'
+  200: 'food'
+  201: 'napkins'
+  202: 'book'
+  203: 'wood'
+  204: 'stair'
+  205: 'objects'
+  206: 'trashcan'
+  207: 'magazine rack'
+  208: 'fence'
+  209: 'bedside table'
+  210: 'jacket'
+  211: 'papers'
+  212: 'organizer'
+  213: 'drawer'
+  214: 'flower'
+  215: 'grass'
+  216: 'rag'
+  217: 'kitchen sofa'
+  218: 'fruit plate'
+  219: 'player'
+  220: 'round table'
+  221: 'sofa chair'
+  222: 'cushion'
+  223: 'screen'
+  224: 'laundry basket'
+  225: 'wall /other room'
+  226: 'floor /other room'
+  227: 'shower'
+  228: 'recycle bin'
+  229: 'washing machine'
+  230: 'drying machine'
+  231: 'washing powder'
+  232: 'bookshelf'
+  233: 'linen'
+  234: 'bread'
+  235: 'storage container'
+  236: 'pan'
+  237: 'extractor fan'
+  238: 'footstool'
+  239: 'dining chair'
+
+
+# ============================================================
+# 使用示例
+# ============================================================
+# 在 base_joint_training.yaml 中添加：
+#
+# defaults:
+#   - dataset_omni3d: omni3d
+#
+# 这将加载所有6个训练数据集：
+#   - objectron: 移动设备AR场景
+#   - arkitscenes: 室内AR场景
+#   - nuscenes: 室外自动驾驶场景
+#   - hypersim: 合成室内场景
+#   - kitti: 室外驾驶场景
+#   - sunrgbd: 室内RGB-D场景
+#
+# 如果只想使用部分数据集，可以注释掉不需要的数据集配置
+
+# ============================================================
+# 数据格式说明
+# ============================================================
+# Pickle 文件格式（DetAny3D 格式）:
+#
+# List[Dict] 每个字典包含：
+#   - img_path: str                    # 图像路径
+#   - depth_path: str (可选)           # 深度图路径（.png 或 .npy）
+#   - K: np.ndarray (3, 3)             # 相机内参矩阵
+#   - category_groups: Dict[int, List[Dict]]  # 按类别分组的目标
+#
+# 每个目标对象包含：
+#   - 3d_bbox: [x, y, z, w, h, l, yaw]  # 3D 边界框参数
+#   - 2d_bbox_proj: [x1, y1, x2, y2]    # 2D 投影边界框（可选）
+#   - rotation_pose: np.ndarray (3, 3)  # 旋转矩阵（可选）
+#   - label: int                         # 类别 ID
+#   - label_name: str                    # 类别名称
+
+# ============================================================
+# 深度图处理
+# ============================================================
+# 支持的深度图格式：
+#   - .png: 使用 metric_scale 转换为米
+#   - .npy: 直接加载（假设已经是米单位）
+#
+# 如果没有深度图，将创建全零深度图

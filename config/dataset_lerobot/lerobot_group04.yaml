@@ -1,0 +1,55 @@
+defaults:
+  - lerobot
+
+# Group G04
+# Datasets: 16
+# Feature Shapes:
+#   - actions.ee_to_armbase_pose: [7]
+#   - actions.ee_to_robot_pose: [7]
+#   - actions.gripper.openness: [1]
+#   - actions.gripper.pose: [6]
+#   - actions.gripper.position: [1]
+#   - actions.joint.position: [7]
+#   - actions.tcp_to_armbase_pose: [7]
+#   - actions.tcp_to_robot_pose: [7]
+#   - episode_index: [1]
+#   - frame_index: [1]
+#   - hand_camera_intrinsics: [4]
+#   - hand_camera_to_robot_extrinsics: [7]
+#   - head_camera_intrinsics: [4]
+#   - head_camera_to_robot_extrinsics: [7]
+#   - images.rgb.hand: [480, 640, 3]
+#   - images.rgb.head: [480, 640, 3]
+#   - index: [1]
+#   - master_actions.gripper.openness: [1]
+#   - master_actions.gripper.pose: [6]
+#   - master_actions.gripper.position: [1]
+#   - master_actions.joint.position: [7]
+#   - states.ee_to_armbase_pose: [7]
+#   - states.ee_to_robot_pose: [7]
+#   - states.gripper.pose: [6]
+#   - states.gripper.position: [1]
+#   - states.joint.position: [7]
+#   - states.robot_to_env_pose: [7]
+#   - states.tcp_to_armbase_pose: [7]
+#   - states.tcp_to_robot_pose: [7]
+#   - task_index: [1]
+#   - timestamp: [1]
+lerobot_dir: "mydata"
+repo_id:
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/collect_the_shoes/collect_the_shoes"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/organize_the_alarm_clocks/organize_the_alarm_clocks"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/organize_the_brushes/organize_the_brushes"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/organize_the_colorful_cups/organize_the_colorful_cups"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/organize_the_glues/organize_the_glues"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/organize_the_teaboxes/organize_the_teaboxes"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/pick_the_object_into_trashcan/pick_the_object_into_trashcan"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/pick_the_priced_item/pick_the_priced_item"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/select_a_drink/select_a_drink"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/franka/sort_the_table_waste/sort_the_table_waste"
+  - "InternData-A1-full/sim_updated_lerobotv30/long_horizon_tasks/franka/manipulate_the_microwave/manipulate_the_microwave"
+  - "InternData-A1-full/sim_updated_lerobotv30/long_horizon_tasks/franka/put_the_trashcan_in_trashcan_long/put_the_trashcan_in_trashcan_long"
+  - "InternData-A1-full/sim_updated_lerobotv30/long_horizon_tasks/franka/sort_bowls_and_cups/sort_bowls_and_cups"
+  - "InternData-A1-full/sim_updated_lerobotv30/long_horizon_tasks/franka/sweep_the_trash/sweep_the_trash"
+  - "InternData-A1-full/sim_updated_lerobotv30/pick_and_place_tasks/franka/continues_pick_and_place_part1/continues_pick_and_place_part1/render"
+  - "InternData-A1-full/sim_updated_lerobotv30/pick_and_place_tasks/franka/continues_pick_and_place_part2/continues_pick_and_place_part2/render"

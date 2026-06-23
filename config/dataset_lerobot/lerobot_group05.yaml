@@ -1,0 +1,32 @@
+defaults:
+  - lerobot
+
+# Group G05
+# Datasets: 2
+# Feature Shapes:
+#   - actions.left_gripper.position: [1]
+#   - actions.left_joint.position: [6]
+#   - actions.right_gripper.position: [1]
+#   - actions.right_joint.position: [6]
+#   - episode_index: [1]
+#   - frame_index: [1]
+#   - images.rgb.hand_left: [480, 640, 3]
+#   - images.rgb.hand_right: [480, 640, 3]
+#   - images.rgb.head: [360, 640, 3]
+#   - index: [1]
+#   - master_actions.left_gripper.openness: [1]
+#   - master_actions.left_gripper.position: [1]
+#   - master_actions.left_joint.position: [6]
+#   - master_actions.right_gripper.openness: [1]
+#   - master_actions.right_gripper.position: [1]
+#   - master_actions.right_joint.position: [6]
+#   - states.left_gripper.position: [1]
+#   - states.left_joint.position: [6]
+#   - states.right_gripper.position: [1]
+#   - states.right_joint.position: [6]
+#   - task_index: [1]
+#   - timestamp: [1]
+lerobot_dir: "mydata"
+repo_id:
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/lift2/store_the_toothbrushes_part1/store_the_toothbrushes_part1"
+  - "InternData-A1-full/sim_updated_lerobotv30/basic_tasks/lift2/store_the_toothbrushes_part2/store_the_toothbrushes_part2"

@@ -1,0 +1,83 @@
+# LeRobot Dataset
+type: lerobot
+lerobot_dir: "mydata/xtrainer900_lerobot"
+#image_transforms:
+#  enable: true
+#  max_num_transforms: 3
+
+image_transforms:
+  enable: false
+  max_num_transforms: 3
+  brightness: true
+  contrast: true
+  saturation: true
+  hue: true
+  sharpness: true
+  affine: false
+
+#
+#image_transforms:
+#  enable: true
+#  max_num_transforms: 3
+#  random_order: false
+#  tfs:
+#    brightness:
+#      weight: 1.0
+#      type: "ColorJitter"
+#      kwargs:
+#        brightness: [0.8, 1.2]
+#    contrast:
+#      weight: 1.0
+#      type: "ColorJitter"
+#      kwargs:
+#        contrast: [0.8, 1.2]
+#    saturation:
+#      weight: 1.0
+#      type: "ColorJitter"
+#      kwargs:
+#        saturation: [0.5, 1.5]
+#    hue:
+#      weight: 1.0
+#      type: "ColorJitter"
+#      kwargs:
+#        hue: [-0.05, 0.05]
+#    sharpness:
+#      weight: 1.0
+#      type: "SharpnessJitter"
+#      kwargs:
+#        sharpness: [0.5, 1.5]
+#    # 新增的 affine 配置
+#    affine:
+#      weight: 1.0
+#      type: "RandomAffine"
+#      kwargs:
+#        degrees: [-5.0, 5.0]      # 随机旋转角度范围
+#        translate: [0.05, 0.05]   # 水平和垂直平移的比例 (5%)
+
+repo_id: [
+  "0107_siyuanl1.50107",
+  "0206-yujian-baojie-left-corner",
+  "herb_mix_l0.5_1_1.5_0119",
+  "level1.5siyuan_1231",
+  "level11227hongyan",
+  "level1yujian_single_1231",
+  "0107_xiaowei1.50107",
+  "0206-yujian-baojie-right-wrong",
+  "level051221herb",
+  "level1.5xiaowei_1231",
+  "level11227litwell",
+  "0107_yujianl1.50107",
+  "0208-herb-idle",
+  "level051224peihao",
+  "level11226shengzeng",
+  "level11227siyuan_single",
+  "0107_yumingl1.50107",
+  "0208-hongyan-baojie-right-pull",
+  "level1.5hongyan_1231",
+  "level11226siyuan",
+  "level1yujian_1231"
+]
+episodes: null
+video_backend: "pyav"
+local_files_only: True
+use_imagenet_stats: False
