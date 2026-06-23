@@ -1,0 +1,78 @@
+# HDF5 Dataset
+type: hdf5
+hdf5_dir: "mydata"
+
+image_aug: True
+head_camera_randomcrop_aug: True # if have depth, set False
+# The probability to randomly mask the conditions (except states) during training.
+# If set to 0, the conditions are not masked.
+cond_mask_prob: 0.0
+# The probability to randomly mask the external camera image during training.
+# If set to < 0, the external camera image is masked with the probability of `cond_mask_prob`.
+cam_ext_mask_prob: -1.0
+
+use_hdf5: True
+
+# The number of historical images
+img_history_size: 1
+# The number of future actions to predict
+action_chunk_size: 50
+# Dimension for state/action, we use the same space for both state and action
+state_dim: 32
+# The number of cameras to be used in the model
+num_cameras: 3
+
+image_size: 224
+auto_adjust_image_brightness: False
+
+action_type: "relative_chunk_ee_RT"
+#action_type: "joint"
+
+# noise std
+root_noise_std: [0.1, 0.1, 0.1]
+
+# Video settings
+num_video_frames: 8    # Number of video frames to predict
+video_height: 384      # Video frame height
+video_width: 320       # Video frame width
+
+xtrainer:
+  _target_: data.ds_raw.mix.HDF5VLADataset
+  sample_weights:
+    xtrainer2/chuangyuan/hdf5/D2184/xtrainer_chuangyuan_773: 1
+#    umi: 1
+#    xtrainer2/pnp_tasks/hdf5/stack_3_bowls: 1
+#    xtrainer2/pnp_tasks/hdf5/spoon_fork_bowls: 1
+#    xtrainer2/pnp_tasks/hdf5/hang_mug: 1
+#    xtrainer2/pnp_tasks/hdf5/open_drawer: 1
+#    xtrainer2/pnp_tasks/hdf5/fold_towel: 1
+
+umi:
+  _target_: data.ds_raw.umi.HDF5VLADataset
+  sample_weights:
+    umi: 1
+
+agibot:
+  _target_: data.ds_raw.agibot.HDF5VLADataset
+  sample_weights:
+    agibot_beta: 1
+
+droid:
+  _target_: data.ds_raw.droid.HDF5VLADataset
+  sample_weights:
+    droid_raw/1.0.1: 1
+
+rdt:
+  _target_: data.ds_raw.rdt.HDF5VLADataset
+  sample_weights:
+    rdt-ft-data/rdt_data: 1
+
+dataset_list:
+  - ${dataset.xtrainer} #10Hz
+#  - ${dataset.umi} #10Hz
+#  - ${dataset.rdt} #25Hz 3143161
+#  - ${dataset.droid} #15Hz 18245121
+#  - ${dataset.agibot} #30Hz 287907267
+
+#mean_std_path: "mydata/umi_RT/qpos_mean_std_online_cleaned.pkl"
+mean_std_path: "mydata/xtrainer2/chuangyuan/hdf5/D2184/xtrainer_chuangyuan_773_RT/qpos_mean_std_online.pkl"
