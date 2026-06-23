@@ -1,18 +1,33 @@
-# PoseVLA
+<div align="center">
 
-PoseVLA is a joint training framework for **Vision-Language-Action (VLA) + 3D object pose / detection**, built on top of **PaliGemma + π0 / π0.5 Action Expert**.
+# PoseVLA: Universal Pose Pretraining for Generalizable Vision-Language-Action Policies (RSS2026)
 
-The project supports:
+A unified framework that co-trains a **Vision-Language-Action (VLA)** policy with **3D object detection / 6D pose estimation**, built on top of **PaliGemma**. 🤗
 
-- **VLM training**: learn 3D object detection / 6D pose / scene description via Next-Token Prediction (on Omni3D, Omni6D, BOP, GraspClutter6D, etc.).
-- **Action training**: learn robot actions via Flow Matching (on HDF5 / LeRobot-format data such as Agibot, Droid, RDT, xtrainer, InternData-A1, etc.).
-- **Co-Training**: VLM and Action data can be jointly optimized within the same training step, with optional Knowledge Insulation.
+[//]: # (Purely HuggingFace + Accelerate + DeepSpeed + Hydra based — concise code, multi-node ready, easy to extend.)
 
-It is built on 🤗 `transformers` + `accelerate` + `deepspeed` + `hydra`.
+[![arXiv](https://img.shields.io/badge/arXiv-2602.19710-b31b1b.svg)](https://arxiv.org/abs/2602.19710)
+[![Project Page](https://img.shields.io/badge/Project_Page-PoseVLA-2ea44f.svg)](https://hetolin.github.io/PoseVLA/)
+[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-f7c843)](https://huggingface.co/hetolin/PoseVLA)
+
+[\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](#-pre-train-from-scratch) [\[🌟 Fine-tune\]](#-fine-tune--resume) [\[🎄 Custom Dataset\]](#-use-custom-datasets) [\[📊 Evaluation\]](#-evaluation) [\[🐛 Troubleshooting\]](#-troubleshooting)
+
+</div>
 
 ---
 
-## 📁 Project Structure
+## News 🚀🚀🚀
+- `2026/06`: Initial release of **PoseVLA**: PaliGemma + π0 / π0.5 Action Expert, joint VLM + Action training with Knowledge Insulation, supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / Droid / RDT / UMI / xtrainer / InternData-A1 for robot actions.
+
+## 📖 Documents
+
+The project supports three orthogonal training modes that can be freely combined:
+
+- **VLM training** — learn 3D object detection / 6D pose / scene description via **Next-Token Prediction (NTP)** on Omni3D, Omni6D, BOP, GraspClutter6D, …
+- **Action training** — learn robot actions via **Flow Matching** on HDF5 / LeRobot-format data (Agibot, Droid, RDT, UMI, xtrainer, InternData-A1, …).
+- **Co-Training** — VLM and Action data are interleaved within the same optimization step, with optional **Knowledge Insulation** to decouple their gradients.
+
+### 📁 Project Structure
 
 ```
 PoseVLA/
@@ -67,18 +82,29 @@ PoseVLA/
 
 ---
 
-## 🔧 Environment Setup
+### 🚀 Quick Start
 
-### 1. Python / CUDA dependencies
+#### 1. Clone
+
+```bash
+git clone git@github.com:hetolin/PoseVLA.git
+cd PoseVLA
+```
+
+#### 2. Conda env (installation from scratch)
 
 - Python 3.10.12
-- PyTorch (≥ 2.2 recommended; TF32 / bf16 works best on Ampere / Hopper GPUs)
-
-#### Conda env (installation from scratch)
+- PyTorch 2.7.0 + CUDA 12.6 (TF32 / bf16 works best on Ampere / Hopper GPUs)
 
 ```bash
 conda create -n vla python==3.10.12
 conda activate vla
+
+# Install PyTorch first — it is intentionally NOT pinned in requirements.txt,
+# because the correct wheel depends on your local CUDA version.
+# CUDA 12.6:
+pip install torch==2.7.0 torchvision==0.22.0 torchaudio==2.7.0 \
+    --index-url https://download.pytorch.org/whl/cu126
 
 # NOTE: keep the `lerobot` line commented out in requirements.txt — we install it manually below.
 pip install -r requirements.txt
@@ -92,7 +118,7 @@ pip install --no-deps \
   "lerobot @ git+https://github.com/huggingface/lerobot@638d411cd3acf32c28d8c2120f3c41bda8bb15d4"
 ```
 
-### 2. Pretrained weights
+#### 3. Pretrained weights
 
 Create a `pretrain/` directory under the project root and place any of the following weights (pick what you need — multiple loading branches are available in [train.py](train.py)):
 
@@ -105,7 +131,7 @@ pretrain/
 
 The tokenizer is already bundled under [google/paligemma-3b-pt-224/](google/paligemma-3b-pt-224/); the config points to it via `model.tokenizer_model_path`.
 
-### 3. Environment variables
+#### 4. Environment variables
 
 See [scripts/launch/start_h20.sh](scripts/launch/start_h20.sh). At minimum:
 
@@ -122,9 +148,11 @@ W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your
 
 ---
 
-## 🚀 Launch Training
+### 🌟 Pre-train from Scratch
 
-### Single-node multi-GPU (local debugging)
+PoseVLA is designed to be pre-trained on a mixture of **3D understanding data** (Omni3D / Omni6D / BOP / GraspClutter6D) and **robot action data** (Agibot / Droid / RDT / UMI / xtrainer / InternData-A1).
+
+#### Single-node multi-GPU (local debugging)
 
 ```bash
 # Bootstrap the environment first
@@ -139,7 +167,7 @@ accelerate launch \
   train.py
 ```
 
-### Multi-node multi-GPU (H20 / Taiji cluster)
+#### Multi-node multi-GPU (H20 cluster)
 
 ```bash
 bash scripts/launch/train_h20_multiple.sh False    # second arg toggles debug mode
@@ -155,7 +183,27 @@ Three common configurations are pre-defined inside the script (the first is enab
 
 ---
 
-## ⚙️ Key Configuration ([config/base.yaml](config/base.yaml))
+### 🌟 Fine-tune / Resume
+
+`base.yaml` is automatically saved to `ckpt_save_dir/base.yaml` at each checkpoint and is merged back in on resume:
+
+```bash
+python train.py resume_ckpt=/path/to/exp/29999
+```
+
+The checkpoint layout is:
+
+```
+ckpt/<exp_name>/<step>/
+├── model/                         # Output of save_pretrained() (with tokenizer)
+└── state/training_state.pth/      # Output of accelerator.save_state() (DeepSpeed state)
+```
+
+LoRA fine-tuning is supported via `training.use_lora=True` together with the `lora.*` block in [config/base.yaml](config/base.yaml).
+
+---
+
+### ⚙️ Key Configuration ([config/base.yaml](config/base.yaml))
 
 | Field | Description |
 | --- | --- |
@@ -177,9 +225,22 @@ Three common configurations are pre-defined inside the script (the first is enab
 
 Dataset combinations are aggregated via the `defaults:` section — see the tail of [config/base.yaml](config/base.yaml).
 
+#### 🛠 Common Research Switches
+
+| Goal | How |
+| --- | --- |
+| Train VLM only (NTP) | `co_training.vlm_training=True co_training.action_training=False` |
+| Train Action only (Flow Matching) | `co_training.vlm_training=False co_training.action_training=True` |
+| Joint training + Knowledge Insulation | Enable both, plus `training.is_knowledge_insulation=True` |
+| Switch 3D data ↔ robot data | `data_3d=True/False` |
+| Switch HDF5 ↔ LeRobot | `defaults.dataset: hdf5 / lerobot` |
+| Enable weighted sampling | `training.weighted_sample=True` |
+| Enable attention visualization | `training.vis_attn=True` |
+| Use LoRA | `training.use_lora=True`, plus configure `lora.*` |
+
 ---
 
-## 🧠 Model Loading Branches
+### 🧠 Model Loading Branches
 
 [train.py](train.py) provides several weight-composition strategies (kept as comments, enable as needed):
 
@@ -199,7 +260,7 @@ Dataset combinations are aggregated via the `defaults:` section — see the tail
 
 ---
 
-## 📊 Evaluation
+### 📊 Evaluation
 
 Entry point for 3D detection / pose tasks:
 
@@ -232,7 +293,7 @@ During training, validation automatically invokes these utilities and uploads PR
 
 ---
 
-## 🗂 Data Preparation
+### 🗂 Data Preparation
 
 Raw readers for each dataset:
 
@@ -253,34 +314,22 @@ The bin-statistics file used by the VLM 3D task is specified by `statistics_path
 
 ---
 
-## 💾 Checkpoint Layout
+### 🎄 Use Custom Datasets
 
-```
-ckpt/<exp_name>/<step>/
-├── model/                         # Output of save_pretrained() (with tokenizer)
-└── state/training_state.pth/      # Output of accelerator.save_state() (DeepSpeed state)
-```
+To plug a new dataset into PoseVLA:
 
-`base.yaml` is also saved to `ckpt_save_dir/base.yaml`, and is automatically merged when resuming:
+- **For robot action data** (HDF5 / LeRobot style):
+  - Add a raw reader under [data/ds_raw/](data/ds_raw/) following e.g. [data/ds_raw/agibot.py](data/ds_raw/agibot.py).
+  - Register it in the corresponding training dataset wrapper under [data/ds_train/](data/ds_train/).
+  - Add a Hydra config under `config/dataset/` (or `config/dataset_lerobot/`) and reference it from `defaults:` in [config/base.yaml](config/base.yaml).
+  - Drop a sample-list JSON into `config/dataset_meta/` if your reader needs one.
 
-```bash
-python train.py resume_ckpt=/path/to/exp/29999
-```
+- **For 3D understanding data** (detection / pose):
+  - Add the dataset class under [data/ds_train/](data/ds_train/) (mimic `dataset_omni3d.py` / `dataset_bop.py` / `dataset_clutter.py` / `dataset_det.py`).
+  - Add token mapping logic in [mapping_token.py](mapping_token.py) if a new label format is introduced.
+  - Add a Hydra config under `config/dataset_omni3d/` / `config/dataset_bop/` / `config/dataset_clutter/` / `config/dataset_det/`.
 
----
-
-## 🛠 Common Research Switches
-
-| Goal | How |
-| --- | --- |
-| Train VLM only (NTP) | `co_training.vlm_training=True co_training.action_training=False` |
-| Train Action only (Flow Matching) | `co_training.vlm_training=False co_training.action_training=True` |
-| Joint training + Knowledge Insulation | Enable both, plus `training.is_knowledge_insulation=True` |
-| Switch 3D data ↔ robot data | `data_3d=True/False` |
-| Switch HDF5 ↔ LeRobot | `defaults.dataset: hdf5 / lerobot` |
-| Enable weighted sampling | `training.weighted_sample=True` |
-| Enable attention visualization | `training.vis_attn=True` |
-| Use LoRA | `training.use_lora=True`, plus configure `lora.*`
+Remember to re-run the statistics scripts under `scripts/` so that the normalization stats and bin definitions cover your new data.
 
 ---
 
@@ -314,3 +363,28 @@ policy = PI0Policy.from_pretrained(
     local_files_only=True,
 )
 ```
+
+---
+
+## TODO List
+
+- [x] Release the training / co-training code for PoseVLA.
+- [x] Release the 3D evaluation entry (`eval_gemini.py`) with mAP / PR-curve aggregation.
+- [x] Release support for both **π0** and **π0.5** Action Experts in a single codebase (switchable via `training.pi05`).
+- [ ] Release pretrained PoseVLA checkpoints.
+
+## 🙋 FAQs
+
+If you encounter any issues, feel free to open an issue on GitHub or reach out through discussions. Feedback and contributions are very welcome! 🚀
+
+## Acknowledgement
+
+PoseVLA is built with reference to the following projects:
+[lerobot](https://github.com/huggingface/lerobot),
+[Transformers](https://github.com/huggingface/transformers),
+[Google PaliGemma](https://huggingface.co/google/paligemma-3b-pt-224),
+[π0 / OpenPI](https://github.com/Physical-Intelligence/openpi),
+[Omni3D](https://github.com/facebookresearch/omni3d),
+[BOP Toolkit](https://github.com/thodan/bop_toolkit),
+and [GraspClutter6D](https://github.com/SeungBack/GraspClutter6D).
+Thanks for their awesome work.
