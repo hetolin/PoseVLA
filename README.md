@@ -1,101 +1,101 @@
 # PoseVLA
 
-PoseVLA 是一个以 **PaliGemma + π0/π0.5 Action Expert** 为骨干的 **视觉-语言-动作 (VLA) + 3D 物体位姿/检测** 联合训练框架。
+PoseVLA is a joint training framework for **Vision-Language-Action (VLA) + 3D object pose / detection**, built on top of **PaliGemma + π0 / π0.5 Action Expert**.
 
-项目同时支持：
+The project supports:
 
-- **VLM 训练**：以 Next-Token Prediction 的方式学习 3D 物体检测 / 6D 位姿 / 场景描述（基于 Omni3D、Omni6D、BOP、GraspClutter6D 等数据集）。
-- **Action 训练**：以 Flow Matching 的方式学习机器人动作（基于 HDF5 / LeRobot 格式的 Agibot、Droid、RDT、xtrainer、InternData-A1 等数据）。
-- **Co-Training**：VLM 与 Action 数据可在同一 step 内联合训练，支持 Knowledge Insulation。
+- **VLM training**: learn 3D object detection / 6D pose / scene description via Next-Token Prediction (on Omni3D, Omni6D, BOP, GraspClutter6D, etc.).
+- **Action training**: learn robot actions via Flow Matching (on HDF5 / LeRobot-format data such as Agibot, Droid, RDT, xtrainer, InternData-A1, etc.).
+- **Co-Training**: VLM and Action data can be jointly optimized within the same training step, with optional Knowledge Insulation.
 
-底层基于 🤗 `transformers` + `accelerate` + `deepspeed` + `hydra`。
+It is built on 🤗 `transformers` + `accelerate` + `deepspeed` + `hydra`.
 
 ---
 
-## 📁 目录结构
+## 📁 Project Structure
 
 ```
 PoseVLA/
-├── train.py                    # 训练主入口（hydra + accelerate + deepspeed）
-├── eval_gemini.py              # 评测 / mAP 指标计算入口（Omni3D 等 3D 任务）
-├── data_factory.py             # VLM / Action DataLoader 工厂（统一构建逻辑）
-├── collators.py                # DataCollator（动作 / 检测两类）
-├── mapping_token.py            # 文本 ↔ 3D 场景互编解码工具
-├── graspclutter6dAPI.py        # GraspClutter6D 数据集 API
+├── train.py                    # Main training entry (hydra + accelerate + deepspeed)
+├── eval_gemini.py              # Evaluation / mAP entry (Omni3D and other 3D tasks)
+├── data_factory.py             # Unified VLM / Action DataLoader factory
+├── collators.py                # DataCollators (action / detection)
+├── mapping_token.py            # Text ↔ 3D scene encoding / decoding utilities
+├── graspclutter6dAPI.py        # GraspClutter6D dataset API
 │
-├── pi0/                        # π0 / π0.5 模型实现
+├── pi0/                        # π0 / π0.5 model implementation
 │   ├── configuration_pi0.py    # PI0Config
-│   ├── modeling_pi0.py         # PI0Policy（PaliGemma + Action Expert + Flow Matching）
+│   ├── modeling_pi0.py         # PI0Policy (PaliGemma + Action Expert + Flow Matching)
 │   ├── paligemma_with_expert.py
 │   ├── patch_embed.py
 │   ├── convert_jax_model_to_pytorch.py
 │   └── _lerobot_compat.py
 │
 ├── data/
-│   ├── ds_raw/                 # 原始数据集读取（agibot / droid / rdt / umi / xtrainer / interndata_a1 …）
-│   └── ds_train/               # 训练用 Dataset（hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot）
+│   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 …)
+│   └── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
 │
-├── config/                     # Hydra 配置
-│   ├── base.yaml               # 主配置入口
-│   ├── zero0.json / zero2.json / zero3_offload.json   # DeepSpeed 配置
-│   ├── dataset/                # action 训练数据集配置（hdf5、lerobot）
-│   ├── dataset_bop/            # BOP 系列
+├── config/                     # Hydra configs
+│   ├── base.yaml               # Main config entry
+│   ├── zero0.json / zero2.json / zero3_offload.json   # DeepSpeed configs
+│   ├── dataset/                # Action training dataset configs (hdf5, lerobot)
+│   ├── dataset_bop/            # BOP series
 │   ├── dataset_clutter/        # GraspClutter6D
 │   ├── dataset_det/            # Omni6D
-│   ├── dataset_omni3d/         # Omni3D（train/val/test）
-│   ├── dataset_lerobot/        # LeRobot 分组配置
-│   └── dataset_meta/           # 各数据源的样本列表 (json)
+│   ├── dataset_omni3d/         # Omni3D (train/val/test)
+│   ├── dataset_lerobot/        # LeRobot grouped configs
+│   └── dataset_meta/           # Per-source sample lists (json)
 │
 ├── scripts/
-│   ├── launch/                 # 训练启动脚本
-│   │   ├── start_h20.sh        # 环境初始化（HF / wandb / apt / netrc 等）
-│   │   └── train_h20_multiple.sh   # 多机多卡训练命令
-│   ├── agibot/                 # Agibot 下载脚本
-│   ├── interndata_a1/          # InternData-A1 下载 / 解压 / 配置生成
+│   ├── launch/                 # Training launch scripts
+│   │   ├── start_h20.sh        # Environment bootstrap (HF / wandb / apt / netrc …)
+│   │   └── train_h20_multiple.sh   # Multi-node multi-GPU training command
+│   ├── agibot/                 # Agibot download scripts
+│   ├── interndata_a1/          # InternData-A1 download / extract / config generation
 │   ├── compute_dataset_stat_hdf5_abs_joint.py
 │   ├── compute_dataset_stat_hdf5_rel_ee.py
 │   └── normalize.py
 │
-├── utils/                      # 通用工具（可视化、日志、变换）
+├── utils/                      # Common utilities (visualization, logging, transforms)
 │   ├── logger.py
 │   ├── vis.py
 │   ├── transform_utils.py
 │   └── image_corrupt.py
 │
-└── google/paligemma-3b-pt-224/ # 本地 PaliGemma tokenizer / 配置
+└── google/paligemma-3b-pt-224/ # Local PaliGemma tokenizer / config
 ```
 
 ---
 
-## 🔧 环境准备
+## 🔧 Environment Setup
 
-### 1. Python / CUDA 依赖
+### 1. Python / CUDA dependencies
 
 - Python ≥ 3.10
-- PyTorch（推荐 ≥ 2.2，开启 TF32 / bf16 在 Ampere / Hopper GPU 上效果最佳）
-- 关键依赖：
+- PyTorch (≥ 2.2 recommended; TF32 / bf16 works best on Ampere / Hopper GPUs)
+- Key packages:
 
   ```bash
   pip install transformers accelerate deepspeed hydra-core omegaconf wandb \
               tqdm matplotlib numpy peft lerobot
   ```
 
-### 2. 预训练权重
+### 2. Pretrained weights
 
-在项目根目录下新建 `pretrain/`，并放入以下任一权重（按需选择，对应 [train.py](train.py) 中的多种加载分支）：
+Create a `pretrain/` directory under the project root and place any of the following weights (pick what you need — multiple loading branches are available in [train.py](train.py)):
 
 ```
 pretrain/
-├── paligemma-3b-pt-224/   # 原生 PaliGemma VLM
-├── lerobot_pi0/           # 已微调的 π0
+├── paligemma-3b-pt-224/   # Vanilla PaliGemma VLM
+├── lerobot_pi0/           # Finetuned π0
 └── pi05_base/             # π0.5
 ```
 
-Tokenizer 已内置在 [google/paligemma-3b-pt-224/](google/paligemma-3b-pt-224/)，配置中通过 `model.tokenizer_model_path` 指向即可。
+The tokenizer is already bundled under [google/paligemma-3b-pt-224/](google/paligemma-3b-pt-224/); the config points to it via `model.tokenizer_model_path`.
 
-### 3. 环境变量
+### 3. Environment variables
 
-参考 [scripts/launch/start_h20.sh](scripts/launch/start_h20.sh)，需要设置：
+See [scripts/launch/start_h20.sh](scripts/launch/start_h20.sh). At minimum:
 
 ```bash
 export ROOT="/your/home"
@@ -106,19 +106,19 @@ export HF_LEROBOT_HOME=${HF_HOME}/lerobot
 export HYDRA_FULL_ERROR=1
 ```
 
-W&B 自动登录：脚本会写入 `/root/.netrc`，把里面的 `API_KEY` 换成自己的。
+W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your own.
 
 ---
 
-## 🚀 启动训练
+## 🚀 Launch Training
 
-### 单机多卡（本地调试）
+### Single-node multi-GPU (local debugging)
 
 ```bash
-# 先初始化环境
+# Bootstrap the environment first
 bash scripts/launch/start_h20.sh
 
-# 然后用 accelerate 启动
+# Then launch with accelerate
 accelerate launch \
   --multi_gpu --num_machines 1 --num_processes 8 \
   --mixed_precision=bf16 \
@@ -127,69 +127,69 @@ accelerate launch \
   train.py
 ```
 
-### 多机多卡（H20 / Taiji 集群）
+### Multi-node multi-GPU (H20 / Taiji cluster)
 
 ```bash
-bash scripts/launch/train_h20_multiple.sh False    # 第二个参数控制 debug
+bash scripts/launch/train_h20_multiple.sh False    # second arg toggles debug mode
 ```
 
-`train_h20_multiple.sh` 会读取集群注入的环境变量 `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM`，并通过 `accelerate launch` 启动 [train.py](train.py)。
+`train_h20_multiple.sh` reads cluster-injected env vars `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` and starts [train.py](train.py) through `accelerate launch`.
 
-脚本中已内置三套常用配置（默认启用第一套，其余被注释保留）：
+Three common configurations are pre-defined inside the script (the first is enabled by default, others are kept as comments):
 
-1. **train VLM only**：`co_training.vlm_training=True, action_training=False, data_3d=True`
-2. **train VLM (robot only)**：`data_3d=False`，加载已训好的 VLM checkpoint 继续微调
-3. **train VLA action only**：`vlm_training=False, action_training=True`
+1. **Train VLM only**: `co_training.vlm_training=True, action_training=False, data_3d=True`
+2. **Train VLM (robot only)**: `data_3d=False`, continue finetuning from a trained VLM checkpoint
+3. **Train VLA action only**: `vlm_training=False, action_training=True`
 
 ---
 
-## ⚙️ 关键配置（[config/base.yaml](config/base.yaml)）
+## ⚙️ Key Configuration ([config/base.yaml](config/base.yaml))
 
-| 配置项 | 说明 |
+| Field | Description |
 | --- | --- |
 | `training.mixed_precision` | `bf16` / `fp16` / `no` |
-| `training.batch_size` / `grad_accumulation_steps` | 单卡 batch 与梯度累积步数 |
-| `training.max_training_steps` | 总训练步数 |
-| `training.scheduler_warmup_steps` / `decay_steps` / `decay_lr` | 学习率调度 |
-| `training.is_knowledge_insulation` | 是否使用 Knowledge Insulation（VLM 与 Action 解耦） |
-| `training.pi05` | 是否使用 π0.5 分支 |
-| `training.vis_attn` | 验证阶段是否可视化注意力图 |
-| `training.add_extra_token` / `add_image_token` / `add_prior` | NTP 任务的额外 token 开关 |
-| `training.weighted_sample` | 多数据集按 `n^0.43` 加权采样 |
-| `co_training.vlm_training` / `action_training` | 控制本次训练包含哪类数据 |
-| `data_3d` | True → 走 Omni3D / BOP / Clutter 分支；False → 走 Agibot + InternData-A1 分支 |
-| `dataset.action_chunk_size` / `img_history_size` | 动作 chunk 长度与历史帧数 |
-| `dataset.image_size` | 输入图像尺寸（默认 224） |
-| `deepspeed` | 指向 `config/zero0/2/3_offload.json` |
-| `resume_ckpt` | 断点续训目录（包含 `model/` 与 `state/training_state.pth`） |
+| `training.batch_size` / `grad_accumulation_steps` | Per-GPU batch size and gradient accumulation |
+| `training.max_training_steps` | Total training steps |
+| `training.scheduler_warmup_steps` / `decay_steps` / `decay_lr` | LR schedule |
+| `training.is_knowledge_insulation` | Enable Knowledge Insulation (decouple VLM and Action) |
+| `training.pi05` | Use the π0.5 branch |
+| `training.vis_attn` | Visualize attention maps during validation |
+| `training.add_extra_token` / `add_image_token` / `add_prior` | Extra-token switches for NTP tasks |
+| `training.weighted_sample` | Multi-dataset weighted sampling by `n^0.43` |
+| `co_training.vlm_training` / `action_training` | Which data type is included in this run |
+| `data_3d` | True → Omni3D / BOP / Clutter branch; False → Agibot + InternData-A1 branch |
+| `dataset.action_chunk_size` / `img_history_size` | Action chunk length and history frames |
+| `dataset.image_size` | Input image size (default 224) |
+| `deepspeed` | Points to `config/zero0/2/3_offload.json` |
+| `resume_ckpt` | Resume directory (contains `model/` and `state/training_state.pth`) |
 
-数据集组合通过 `defaults:` 节聚合，详见 [config/base.yaml](config/base.yaml) 末尾。
+Dataset combinations are aggregated via the `defaults:` section — see the tail of [config/base.yaml](config/base.yaml).
 
 ---
 
-## 🧠 模型加载分支
+## 🧠 Model Loading Branches
 
-[train.py](train.py) 提供多种权重组合方式（注释保留，按需启用）：
+[train.py](train.py) provides several weight-composition strategies (kept as comments, enable as needed):
 
-1. **直接从 π0 / π0.5 checkpoint 加载**
+1. **Load directly from a π0 / π0.5 checkpoint**
    ```python
    policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
    ```
-2. **PaliGemma + 不使用 Action Expert（当前默认）**
+2. **PaliGemma without Action Expert (current default)**
    ```python
    policy = PI0Policy(pi0_config)
    policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
    ```
-3. **VLM 来自 π0，再把 Action Expert 替换为新初始化**
-4. **只训 VLM，复用 π0 的 Action Expert**
+3. **Use the VLM from π0 and re-initialize the Action Expert**
+4. **Train VLM only while reusing the Action Expert from π0**
 
-> 训练前默认 `del policy.model.paligemma_with_expert.gemma_expert.model.embed_tokens / lm_head` 以减少显存。
+> By default the training script runs `del policy.model.paligemma_with_expert.gemma_expert.model.embed_tokens / lm_head` to save memory.
 
 ---
 
-## 📊 评测
+## 📊 Evaluation
 
-3D 检测 / 位姿任务评测入口：
+Entry point for 3D detection / pose tasks:
 
 ```bash
 python eval_gemini.py \
@@ -197,25 +197,25 @@ python eval_gemini.py \
   data_3d=True
 ```
 
-`eval_gemini.py` 提供：
+`eval_gemini.py` provides:
 
-- `evaluate_sample(...)` 单样本 3D IoU / 旋转 / 平移误差
-- `compute_metrics_summary(...)` mAP / PR 曲线汇总（VOC 11-point & 101-point）
+- `evaluate_sample(...)` — per-sample 3D IoU / rotation / translation errors
+- `compute_metrics_summary(...)` — mAP / PR curve aggregation (VOC 11-point & 101-point)
 
-训练过程中也会在 validation 时自动调用并通过 W&B 上传 PR 曲线、3D 框可视化与文本预测对比。
+During training, validation automatically invokes these utilities and uploads PR curves, 3D-box visualizations, and text-prediction comparisons to W&B.
 
 ---
 
-## 🗂 数据准备
+## 🗂 Data Preparation
 
-各数据集对应的 raw 读取实现：
+Raw readers for each dataset:
 
-- **Agibot**：[data/ds_raw/agibot.py](data/ds_raw/agibot.py)，下载脚本 [scripts/agibot/download.sh](scripts/agibot/download.sh)
-- **InternData-A1**：[data/ds_raw/interndata_a1.py](data/ds_raw/interndata_a1.py)，[scripts/interndata_a1/](scripts/interndata_a1/)
-- **Droid / RDT / UMI / xtrainer**：见 `data/ds_raw/*.py`
-- **BOP / GraspClutter6D / Omni3D / Omni6D**：见 `data/ds_train/dataset_*.py` 与 `config/dataset_*/`
+- **Agibot**: [data/ds_raw/agibot.py](data/ds_raw/agibot.py), download script [scripts/agibot/download.sh](scripts/agibot/download.sh)
+- **InternData-A1**: [data/ds_raw/interndata_a1.py](data/ds_raw/interndata_a1.py), [scripts/interndata_a1/](scripts/interndata_a1/)
+- **Droid / RDT / UMI / xtrainer**: see `data/ds_raw/*.py`
+- **BOP / GraspClutter6D / Omni3D / Omni6D**: see `data/ds_train/dataset_*.py` and `config/dataset_*/`
 
-统计量计算：
+Statistics computation:
 
 ```bash
 python scripts/compute_dataset_stat_hdf5_abs_joint.py
@@ -223,19 +223,19 @@ python scripts/compute_dataset_stat_hdf5_rel_ee.py
 python scripts/normalize.py
 ```
 
-VLM 3D 任务使用的 bin 统计文件由 `statistics_path_6d_dataset` 指定（默认 `./statistic_all_datasets/all_bins.pkl`）。
+The bin-statistics file used by the VLM 3D task is specified by `statistics_path_6d_dataset` (default: `./statistic_all_datasets/all_bins.pkl`).
 
 ---
 
-## 💾 Checkpoint 结构
+## 💾 Checkpoint Layout
 
 ```
 ckpt/<exp_name>/<step>/
-├── model/                         # save_pretrained() 输出（含 tokenizer）
-└── state/training_state.pth/      # accelerator.save_state() 输出（DeepSpeed 状态）
+├── model/                         # Output of save_pretrained() (with tokenizer)
+└── state/training_state.pth/      # Output of accelerator.save_state() (DeepSpeed state)
 ```
 
-`base.yaml` 同时被保存到 `ckpt_save_dir/base.yaml`，断点续训时会自动合并：
+`base.yaml` is also saved to `ckpt_save_dir/base.yaml`, and is automatically merged when resuming:
 
 ```bash
 python train.py resume_ckpt=/path/to/exp/29999
@@ -243,21 +243,15 @@ python train.py resume_ckpt=/path/to/exp/29999
 
 ---
 
-## 🛠 常见研究开关速查
+## 🛠 Common Research Switches
 
-| 想做什么 | 怎么改 |
+| Goal | How |
 | --- | --- |
-| 只训 VLM（NTP） | `co_training.vlm_training=True co_training.action_training=False` |
-| 只训 Action（Flow Matching） | `co_training.vlm_training=False co_training.action_training=True` |
-| 联合训练 + Knowledge Insulation | 同时开启两者，并 `training.is_knowledge_insulation=True` |
-| 切换 3D 数据 ↔ 机器人数据 | `data_3d=True/False` |
-| 切换 HDF5 ↔ LeRobot | `defaults.dataset: hdf5 / lerobot` |
-| 启用 weighted sampling | `training.weighted_sample=True` |
-| 启用 attention 可视化 | `training.vis_attn=True` |
-| 使用 LoRA | `training.use_lora=True`，并配置 `lora.*` |
-
----
-
-## 📜 License
-
-仅供研究用途，请确认所使用的数据集与预训练权重各自的许可协议。
+| Train VLM only (NTP) | `co_training.vlm_training=True co_training.action_training=False` |
+| Train Action only (Flow Matching) | `co_training.vlm_training=False co_training.action_training=True` |
+| Joint training + Knowledge Insulation | Enable both, plus `training.is_knowledge_insulation=True` |
+| Switch 3D data ↔ robot data | `data_3d=True/False` |
+| Switch HDF5 ↔ LeRobot | `defaults.dataset: hdf5 / lerobot` |
+| Enable weighted sampling | `training.weighted_sample=True` |
+| Enable attention visualization | `training.vis_attn=True` |
+| Use LoRA | `training.use_lora=True`, plus configure `lora.*`

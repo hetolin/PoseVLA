@@ -190,4 +190,5 @@ secrets.json
 *.tmp
 *.orig
 core
-core.*scripts/launch/start_h20.sh
+core.*
+scripts/launch/start_h20.sh
