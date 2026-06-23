@@ -139,7 +139,6 @@ pretrained/
 # =========================================================
 data_cache/
 datasets/
-dataset/
 .cache_huggingface/
 .huggingface/
 
