@@ -71,14 +71,25 @@ PoseVLA/
 
 ### 1. Python / CUDA dependencies
 
-- Python ≥ 3.10
+- Python 3.10.12
 - PyTorch (≥ 2.2 recommended; TF32 / bf16 works best on Ampere / Hopper GPUs)
-- Key packages:
 
-  ```bash
-  pip install transformers accelerate deepspeed hydra-core omegaconf wandb \
-              tqdm matplotlib numpy peft lerobot
-  ```
+#### Conda env (installation from scratch)
+
+```bash
+conda create -n vla python==3.10.12
+conda activate vla
+
+# NOTE: keep the `lerobot` line commented out in requirements.txt — we install it manually below.
+pip install -r requirements.txt
+
+# Install lerobot manually
+git clone https://github.com/huggingface/lerobot
+cd lerobot
+git checkout 638d411cd3acf32c28d8c2120f3c41bda8bb15d4
+# In lerobot/pyproject.toml, change the `pyav` dependency name to `av`
+pip install -e .
+```
 
 ### 2. Pretrained weights
 
@@ -192,10 +203,24 @@ Dataset combinations are aggregated via the `defaults:` section — see the tail
 Entry point for 3D detection / pose tasks:
 
 ```bash
-python eval_gemini.py \
-  resume_ckpt=/path/to/exp/49999 \
-  data_3d=True
+python eval_gemini.py
 ```
+
+> ⚠️ **Note**: [eval_gemini.py](eval_gemini.py) currently hard-codes the checkpoint path and the
+> output directory inside its `main()` function (it does **not** read `cfg.resume_ckpt`).
+> Open the file and edit these two lines before running:
+>
+> ```python
+> # near the top of main()
+> ckpt_path = "ckpt/<your_exp_name>/<step>/model"
+>
+> # near the end of main()
+> save_dir = "./eval_results_<your_tag>"
+> ```
+>
+> The script always loads the `omni3d_test` split via `Omni3DConsumerDataset`
+> and runs `policy.forward_evaluate_ntp(...)`; switching to other benchmarks
+> requires code changes.
 
 `eval_gemini.py` provides:
 
@@ -255,3 +280,36 @@ python train.py resume_ckpt=/path/to/exp/29999
 | Enable weighted sampling | `training.weighted_sample=True` |
 | Enable attention visualization | `training.vis_attn=True` |
 | Use LoRA | `training.use_lora=True`, plus configure `lora.*`
+
+---
+
+## 🐛 Troubleshooting
+
+### 1. `draccus.utils.ParsingError` when resuming from a checkpoint
+
+Symptom:
+
+```
+draccus.utils.ParsingError: Expected a dict with a 'type' key for
+<class 'lerobot.configs.policies.PreTrainedConfig'>,
+got {'n_obs_steps': 1, 'normalization_mapping': {'VIS' ...}}
+```
+
+Root cause: the `draccus` version used when **saving** the checkpoint differs from the one used when **loading** it, so the serialized `PreTrainedConfig` is missing the `type` discriminator key that newer `draccus` expects.
+
+**Solution 1 (recommended)** — pin `draccus` to the version this repo is tested with, then re-save the checkpoint:
+
+```bash
+pip install draccus==0.10.0
+# retrain (or resume + immediately save_state) so the new ckpt is serialized correctly
+```
+
+**Solution 2** — bypass the discriminator by passing `config=pi0_config` explicitly when reloading. In [train.py](train.py), change the resume call to:
+
+```python
+policy = PI0Policy.from_pretrained(
+    os.path.join(cfg.resume_ckpt, "model"),
+    config=pi0_config,
+    local_files_only=True,
+)
+```
