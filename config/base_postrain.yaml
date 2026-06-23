@@ -1,0 +1,111 @@
+dev_dir: ${oc.env:DEV_PATH}/PoseVLA
+debug: False
+
+wandb_project: "PoseVLA"                                  # Name of W&B project to log to (use default!)
+
+branch: pi0
+
+exp_name: "align_bs${training.batch_size}_${training.grad_accumulation_steps}_robotwin" 
+ckpt_save_dir: "${dev_dir}/ckpt/${exp_name}"
+save_training_state: False # will use more disk storge
+checkpoints_total_limit: 5
+
+resume_ckpt: null
+
+deepspeed: "./config/zero2.json"
+seed: 42
+
+# Training Parameters
+training:
+  use_ema: False
+  use_lora: False # Whether to use LoRA fine-tuning
+
+  freeze_vision_encoder: False
+
+  mixed_precision: 'bf16'                                  # choices=["no", "fp16", "bf16"]
+  batch_size: 12                                            # Fine-tuning batch size
+  max_training_steps: 200_000                                        # Max number of fine-tuning steps
+  max_evaluation_steps: 20                                        # Max number of fine-tuning steps
+
+  optimizer_lr: 2.5e-5
+  optimizer_betas: [0.9, 0.95]
+  optimizer_eps: 1e-8
+  optimizer_weight_decay: 1e-10
+
+  scheduler_warmup_steps: 1_000
+  scheduler_decay_steps: 80_000 
+  scheduler_decay_lr: 2.5e-6
+
+  grad_accumulation_steps: 1                                # Gradient accumulation steps
+  max_grad_norm: 1.0
+
+  train_frequency: 50                                 # Interval for training
+  ckpt_frequency: 10000                                 # Interval for checkpointing
+  eval_frequency: 5000                                 # Interval for evaluation
+
+  is_knowledge_insulation: False
+  pi05: False # here pi0.5 !!
+  vis_attn : True
+  add_extra_token: True # !!
+  add_image_token: False # !!
+  add_prior: False
+
+  weighted_sample: False
+
+
+## Model Parameters
+model:
+  action_expert_path: "/home/tione/notebook/home/hetolin/robot_code/embodied_pi0_action/pretrain/lerobot_pi0" # fine-tuned paligemma from pi0
+  pretrained_model_path: "ckpt/pi0_224_prior_weighted_sample_intra_neg_nooverlap1_bs7_gpu16_lr5e-5_decay1e-10/99999/model" # vlm3d
+  tokenizer_model_path: "/home/henryhyyu/RoboTwin/policy/PoseVLA/google/paligemma-3b-pt-224"
+
+# LoRA Arguments
+lora:
+  _target_: peft.LoraConfig
+  r: 16 # Rank of LoRA weight matrix
+  target_modules: ["qkv", "proj", "mlp.fc1", "mlp.fc2"]
+  lora_dropout: 0.05 # Dropout applied to LoRA weights
+  lora_alpha: 16
+  init_lora_weights: "gaussian"
+  task_type: "FEATURE_EXTRACTION"
+
+ema:
+  _target_: embodied_pi0_action.utils.ema_model.EMAModel
+  update_after_step: 0
+  inv_gamma: 1.0
+  power: 0.75
+  min_value: 0.0
+  max_value: 0.9999
+
+dataloader:
+  _target_: torch.utils.data.DataLoader
+  batch_size: ${training.batch_size}
+  shuffle: True
+  num_workers: 4
+  pin_memory: True
+  persistent_workers: True
+
+dataloader_val:
+  _target_: torch.utils.data.DataLoader
+  batch_size: ${training.batch_size}
+  shuffle: False
+  num_workers: 4
+  pin_memory: True
+  persistent_workers: True
+
+co_training:
+  vlm_training: False
+  action_training: True
+
+data_3d: False
+statistics_path_6d_dataset: './statistic_all_datasets/all_bins.pkl'
+max_norm_6d_dataset: False #是否将pose归一化到0-1
+uniform_mapping_6d_dataset: False #是否将pose均匀mapping到0-1
+depth_full_prob: 0.5
+depth_sparse_prob: 0.0
+ray_prob: 0.5
+neg_prob: 0.1
+
+defaults:
+  - _self_
+  - dataset: robotwin  # [hdf5.yaml, lerobot.yaml]   dataset:文件名; lerobot:yaml文件名

@@ -1,0 +1,47 @@
+# HDF5 Dataset
+type: hdf5
+hdf5_dir: "/home/pub_data/hanyangyu/Datasets" # where the training data is stored
+
+action_type: "eep" # "qpos" or "eep" or "delta_eep"
+
+image_aug: True
+head_camera_randomcrop_aug: False # if have depth, set False
+# The probability to randomly mask the conditions (except states) during training.
+# If set to 0, the conditions are not masked.
+cond_mask_prob: 0.0
+# The probability to randomly mask the external camera image during training.
+# If set to < 0, the external camera image is masked with the probability of `cond_mask_prob`.
+cam_ext_mask_prob: -1.0
+
+use_hdf5: True
+
+# The number of historical images
+img_history_size: 1
+# The number of future actions to predict
+action_chunk_size: 50
+# Dimension for state/action, we use the same space for both state and action
+state_dim: 32
+# The number of cameras to be used in the model
+num_cameras: 3
+
+image_size: 224
+auto_adjust_image_brightness: False
+
+# Video settings
+num_video_frames: 8    # Number of video frames to predict
+video_height: 384      # Video frame height
+video_width: 320       # Video frame width
+
+
+xtrainer:
+  _target_: data.hdf5_robotwin_dataset.HDF5VLADataset
+  sample_weights:
+    robotwin_processed: 1.0
+    robotwin_processed_random: 10.0
+
+
+dataset_list:
+  - ${dataset.xtrainer}
+  
+
+mean_std_path: "/home/pub_data/hanyangyu/Datasets/robotwin_processed_random/global_stats_output_eep/qpos_mean_std_online.pkl"

@@ -15,7 +15,27 @@ from scipy.spatial.transform import Rotation
 # pip install adjustText
 from adjustText import adjust_text
 
+def plot_all_images(top_cam, left_cam, right_cam, save_path='all_images.png'):
+    #(HISTORY_SIZE, H, W, 3)
+    IMG_HISTORY_SIZE = top_cam.shape[0]
+    cams = [top_cam, left_cam, right_cam]
+    cam_names = ['to_p_cam', 'left_cam', 'right_cam']
 
+    fig, axes = plt.subplots(nrows=3, ncols=IMG_HISTORY_SIZE, figsize=(IMG_HISTORY_SIZE * 2, 6), squeeze=False)
+
+    for row, (cam, name) in enumerate(zip(cams, cam_names)):
+        for col in range(IMG_HISTORY_SIZE):
+            axes[row, col].imshow(convert_to_opencv_format(cam[col]))
+            axes[row, col].axis('off')
+            if row == 0:
+                axes[row, col].set_title(f'Frame {col + 1}')
+        axes[row, 0].set_ylabel(name, rotation=0, labelpad=40, fontsize=12, va='center')
+
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.close()
+    print(f"Saved all images to {save_path}")
+    
 def visualize_attention_mask(attention_mask, batch_index=0, head_index=0):
     """
     可视化 attention mask（debug 用，例如 modeling_pi0 里 att_2d_masks）。

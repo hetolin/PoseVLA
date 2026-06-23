@@ -89,8 +89,7 @@ def initialize_wandb(cfg):
         with open_dict(cfg):
             cfg['wandb_id'] = wandb_info["id"]
 
-    wandb.init(entity=cfg.wandb_entity,
-               project=cfg.wandb_project,
+    wandb.init(project=cfg.wandb_project,#entity=cfg.wandb_entity,
                name=f"{cfg.exp_name}",
                id=cfg.wandb_id if cfg.resume_ckpt else None,
                mode="online",
