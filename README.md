@@ -83,12 +83,13 @@ conda activate vla
 # NOTE: keep the `lerobot` line commented out in requirements.txt — we install it manually below.
 pip install -r requirements.txt
 
-# Install lerobot manually
-git clone https://github.com/huggingface/lerobot
-cd lerobot
-git checkout 638d411cd3acf32c28d8c2120f3c41bda8bb15d4
-# In lerobot/pyproject.toml, change the `pyav` dependency name to `av`
-pip install -e .
+# Install lerobot at the pinned commit.
+# NOTE: at that commit lerobot still declares the old `pyav` package name,
+# which is now renamed to `av` on PyPI. We install `av` first, then install
+# lerobot with `--no-deps` to bypass the stale `pyav` requirement.
+pip install av
+pip install --no-deps \
+  "lerobot @ git+https://github.com/huggingface/lerobot@638d411cd3acf32c28d8c2120f3c41bda8bb15d4"
 ```
 
 ### 2. Pretrained weights
