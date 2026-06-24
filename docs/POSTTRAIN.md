@@ -5,7 +5,7 @@ This document covers **post-training / downstream fine-tuning** of a pre-trained
 - entry script: [`train_posttrain.py`](../train_posttrain.py)
 - main config: [`config/base_postrain.yaml`](../config/base_postrain.yaml)
 - dataset config: [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml)
-- dataloader / smoke test: [`dataset_wan.py`](../dataset_wan.py)
+- dataloader / smoke test: [`data/ds_train/dataset_hdf5.py`](../data/ds_train/dataset_hdf5.py)
 - multi-GPU launch: [`train.sh`](../train.sh)
 - data conversion: [`utils/README.md`](../utils/README.md)
 - simulation evaluation: [`robotwin/PoseVLA/README.md`](../robotwin/PoseVLA/README.md)
@@ -79,13 +79,13 @@ Then verify [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml):
 Before launching training, run the dataset visualization smoke test:
 
 ```bash
-python dataset_wan.py
+python data/ds_train/dataset_hdf5.py
 ```
 
 This writes:
 
-- `dataset_wan_images.png`
-- `dataset_wan_joints.png`
+- `all_images.png`
+- `all_joints.png`
 
 Use these plots to verify the RGB views, instruction text, and EEP action curves look stable before launching training.
 

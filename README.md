@@ -46,7 +46,6 @@ PoseVLA/
 ├── train.sh                    # Multi-GPU launch script for post-training
 ├── eval_gemini.py              # Evaluation / mAP entry (Omni3D and other 3D tasks)
 ├── data_factory.py             # Unified VLM / Action DataLoader factory
-├── dataset_wan.py              # Robotwin post-train DataLoader + smoke test
 ├── collators.py                # DataCollators (action / detection)
 ├── mapping_token.py            # Text ↔ 3D scene encoding / decoding utilities
 │

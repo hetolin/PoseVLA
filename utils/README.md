@@ -79,10 +79,10 @@ The output is a list of T5 tensors, matching the order of `instructions.json["se
 ## 4. Smoke Test
 
 ```bash
-python dataset_wan.py
+python data/ds_train/dataset_hdf5.py
 ```
 
-Check `dataset_wan_images.png` and `dataset_wan_joints.png`, then launch:
+Check `all_images.png` and `all_joints.png`, then launch:
 
 ```bash
 python train_posttrain.py
