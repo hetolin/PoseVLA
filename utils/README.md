@@ -1,7 +1,8 @@
 # Robotwin Data Processing
 
-Raw data comes from the official [RoboTwin2.0 dataset](https://huggingface.co/datasets/TianxingChen/RoboTwin2.0/tree/main/dataset).
-Use these scripts to convert it into the HDF5 layout used by `train_posttrain.py`.
+Raw data comes from the official [RoboTwin2.0 dataset](https://huggingface.co/datasets/TianxingChen/RoboTwin2.0/tree/main/dataset). Use these scripts to convert it into the HDF5 layout used by `train_posttrain.py`.
+
+💡 If you want to use the ready-to-train PoseVLA Robotwin data and normalization files directly, download them from [PoseVLA-robotwin-dataset on ModelScope](https://www.modelscope.ai/datasets/hanyangyu1021/PoseVLA-robotwin-dataset/files).
 
 ## 1. Convert Episodes
 
@@ -30,11 +31,9 @@ processed_data/<task_name>-<task_config>-<expert_data_num>/episode_0/
   instructions.json
 ```
 
-The HDF5 contains `actions_qpos`, `actions_eep`, `observations/state_qpos`,
-and `observations/state_eep`. Robotwin post-training uses `action_type: "eep"`.
+The HDF5 contains `actions_qpos`, `actions_eep`, `observations/state_qpos`, and `observations/state_eep`. Robotwin post-training uses `action_type: "eep"`.
 
-Put converted data under the root configured in `config/dataset/robotwin.yaml`,
-for example:
+Put converted data under the root configured in `config/dataset/robotwin.yaml`, for example:
 
 ```text
 /home/pub_data/hanyangyu/Datasets/robotwin_processed/
@@ -56,8 +55,7 @@ python utils/norm_robotwin.py \
   --mode eep
 ```
 
-This writes `qpos_mean_std_online.pkl` containing `action_mean`,
-`action_std`, `eep_mean`, and `eep_std`. Point `robotwin.yaml` to it:
+This writes `qpos_mean_std_online.pkl` containing `action_mean`, `action_std`, `eep_mean`, and `eep_std`. Point `robotwin.yaml` to it:
 
 ```yaml
 mean_std_path: "/home/pub_data/hanyangyu/Datasets/robotwin_processed_random/global_stats_output_eep/qpos_mean_std_online.pkl"
@@ -67,8 +65,7 @@ Distribution plots are saved to `global_distribution_plots/`.
 
 ## 3. Optional T5 Embeddings
 
-For pipelines that need precomputed text embeddings, generate one `t5_seen.pt`
-next to each episode's `instructions.json`:
+For pipelines that need precomputed text embeddings, generate one `t5_seen.pt` next to each episode's `instructions.json`:
 
 ```bash
 python utils/generate_t5_seen.py \
@@ -77,9 +74,7 @@ python utils/generate_t5_seen.py \
   --devices 0,1
 ```
 
-The output is a list of T5 tensors, matching the order of
-`instructions.json["seen"]`. Robotwin action-only post-training does not require
-this step.
+The output is a list of T5 tensors, matching the order of `instructions.json["seen"]`. Robotwin action-only post-training does not require this step.
 
 ## 4. Smoke Test
 

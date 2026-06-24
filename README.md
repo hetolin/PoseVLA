@@ -418,6 +418,11 @@ For multi-GPU training, use the existing launch script:
 bash train.sh
 ```
 
+6. After training, evaluate the checkpoint on the RoboTwin simulation platform.
+   Follow [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) for environment
+   setup, deploying the policy into RoboTwin, configuring `deploy_policy.yml`, and
+   running parallel evaluation.
+
 ---
 
 ## TODO List

@@ -34,6 +34,7 @@ import math
 import os
 import sys
 from collections import deque
+from pathlib import Path
 
 # Make the project root importable when this file is executed directly
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -182,7 +183,10 @@ def pad_vector(vector, new_dim):
     new_vector[..., :current_dim] = vector
     return new_vector
 
-cfg = omegaconf.OmegaConf.load("config/base.yaml")
+_POSEVLA_ROOT = Path(__file__).resolve().parents[1]
+cfg = omegaconf.OmegaConf.load(_POSEVLA_ROOT / "config" / "base.yaml")
+if not os.path.isabs(cfg.model.tokenizer_model_path):
+    cfg.model.tokenizer_model_path = str(_POSEVLA_ROOT / cfg.model.tokenizer_model_path)
 bin_tokenizer = BinTokenizer(cfg.statistics_path_6d_dataset)
 EXTRA_TOKENS = bin_tokenizer.EXTRA_LOC_TOKENS + bin_tokenizer.EXTRA_SEG_TOKENS
 EXTRA_3D_TOKENS = (bin_tokenizer.EXTRA_TRANS_XY_TOKENS +
@@ -191,6 +195,17 @@ EXTRA_3D_TOKENS = (bin_tokenizer.EXTRA_TRANS_XY_TOKENS +
                    bin_tokenizer.EXTRA_SIZE_XYZ_TOKENS)
 EXTRA_IMAGE_TOKENS = bin_tokenizer.EXTRA_IMAGE_TOKENS
 EXTRA_NO_OBJ_TOKENS = bin_tokenizer.EXTRA_NO_OBJ_TOKENS
+
+
+def _resolve_posevla_path(path: str) -> str:
+    if os.path.isabs(path):
+        return path
+    local_path = _POSEVLA_ROOT / path
+    if local_path.exists():
+        return str(local_path)
+    return path
+
+
 class PI0Policy(PreTrainedPolicy):
     """Wrapper class around PI0FlowMatching model to train and run inference within LeRobot."""
 
@@ -210,7 +225,11 @@ class PI0Policy(PreTrainedPolicy):
         super().__init__(config)
         config.validate_features()
         self.config = config
-        self.language_tokenizer = AutoTokenizer.from_pretrained(config.tokenizer_model_path)
+        config.tokenizer_model_path = _resolve_posevla_path(config.tokenizer_model_path)
+        self.language_tokenizer = AutoTokenizer.from_pretrained(
+            config.tokenizer_model_path,
+            local_files_only=True,
+        )
 
         if config.add_extra_token:
             self.language_tokenizer.add_tokens(EXTRA_TOKENS)

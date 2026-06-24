@@ -18,7 +18,7 @@ use_hdf5: True
 # The number of historical images
 img_history_size: 1
 # The number of future actions to predict
-action_chunk_size: 50
+action_chunk_size: 16
 # Dimension for state/action, we use the same space for both state and action
 state_dim: 32
 # The number of cameras to be used in the model

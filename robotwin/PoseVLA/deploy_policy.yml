@@ -1,0 +1,16 @@
+# Basic experiment configuration
+policy_name: policy.PoseVLA.robotwin.PoseVLA
+task_name: beat_block_hammer
+task_config: demo_randomized
+ckpt_setting: default
+seed: 10000
+instruction_type: unseen
+policy_conda_env: 0
+checkpoint_id: 19999
+ckpt_dir_name: align_bs12_1_robotwin
+checkpoint_path:  # optional; if empty, use ckpt/<ckpt_dir_name>/<checkpoint_id>/model
+action_type: eep
+norm_path: /home/pub_data/hanyangyu/Datasets/robotwin_processed_random/global_stats_output_eep/qpos_mean_std_online.pkl
+left_arm_dim: 8
+right_arm_dim: 8
+port: 8081
