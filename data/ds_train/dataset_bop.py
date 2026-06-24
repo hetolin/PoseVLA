@@ -23,8 +23,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "bop_toolkit"))
 from bop_toolkit_lib import inout
 from utils.vis import visualize_2d_3d_all, visualize_views
-from mapping_token import text_to_class_attr_dict, map_3d_label_to_string
-from mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
+from utils.mapping_token import text_to_class_attr_dict, map_3d_label_to_string
+from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
 import tempfile
 import shutil
 
@@ -1054,7 +1054,7 @@ def main(cfg):
     train_det_dataset = BopConsumerDataset(config=cfg, tokenizer=bin_tokenizer, yaml_name="bop_train")
     # Unified collator shared by all four detection datasets.
     # For BOP we read camera_configs from ``cfg.dataset_bop``.
-    from collators import CollatorForDetectionDataset
+    from data.collators import CollatorForDetectionDataset
     data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_bop")
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:

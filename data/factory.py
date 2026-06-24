@@ -69,7 +69,7 @@ def build_weighted_sampler(
 def _build_vlm_3d(cfg, bin_tokenizer):
     """Build VLM dataloaders for the 3D detection / pose branch."""
     # Local imports keep the module light when this branch is not used.
-    from collators import CollatorForDetectionDataset
+    from data.collators import CollatorForDetectionDataset
     from data.ds_train.dataset_bop import BopConsumerDataset
     from data.ds_train.dataset_clutter import BopClutterConsumerDataset
     from data.ds_train.dataset_omni3d import Omni3DConsumerDataset
@@ -195,7 +195,7 @@ def build_action_dataloader(cfg, pi0_config):
     train_dataloader, train_dataset
     """
     if cfg.dataset.type == "hdf5":
-        from collators import CollatorForActionConsumerDataset
+        from data.collators import CollatorForActionConsumerDataset
         from data.ds_train.dataset_hdf5 import VLAConsumerDataset
 
         train_dataset = VLAConsumerDataset(config=cfg)

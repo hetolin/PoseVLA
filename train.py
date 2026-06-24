@@ -35,11 +35,11 @@ from transformers import logging
 from pi0.modeling_pi0 import PI0Config, PI0Policy, bin_tokenizer
 
 # ===== Local modules: dataset / dataloader factory =====
-from data_factory import build_action_dataloader, build_vlm_dataloaders
+from data.factory import build_action_dataloader, build_vlm_dataloaders
 
 # ===== Local modules: utilities and evaluation =====
 from eval_gemini import compute_metrics_summary, evaluate_sample
-from mapping_token import decode_text_to_scene_with_tokenizer
+from utils.mapping_token import decode_text_to_scene_with_tokenizer
 from utils.logger import initialize_wandb, register_features_types, save_wandb
 from utils.vis import (
     plot_all_joints,

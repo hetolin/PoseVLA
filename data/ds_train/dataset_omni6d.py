@@ -19,8 +19,8 @@ except ImportError as exc:  # pragma: no cover - 环境缺少依赖时给出明�
     raise ImportError("缺少 OpenEXR 依赖，无法读取 .exr 深度/掩码文件，请先安装 openexr 与 imath 包") from exc
 from cutoop.data_loader import Dataset as OmniDataset
 from utils.vis import visualize_2d_3d_all, visualize_views
-from mapping_token import text_to_class_attr_dict, map_3d_label_to_string
-from mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
+from utils.mapping_token import text_to_class_attr_dict, map_3d_label_to_string
+from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
 from tqdm import tqdm
 import tempfile
 import shutil
@@ -1177,7 +1177,7 @@ def main(cfg):
     # Unified collator shared by all four detection datasets.
     # ``sub_cfg_key`` selects which sub-config block the camera_configs
     # are read from (``cfg.dataset_det`` here for omni6d).
-    from collators import CollatorForDetectionDataset
+    from data.collators import CollatorForDetectionDataset
     data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_det")
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:

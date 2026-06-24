@@ -454,7 +454,7 @@ def make_dataset(cfg_pi0: PreTrainedConfig, cfg: DictConfig) -> LeRobotDataset |
     config_name="base",
 )
 def test(cfg):
-    from collators import CollatorForActionConsumerDataset
+    from data.collators import CollatorForActionConsumerDataset
 
     cfg.dataloader.batch_size = 1
     cfg.dataloader.num_workers = 1

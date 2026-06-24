@@ -64,7 +64,7 @@ from pi0._lerobot_compat import (
     PreTrainedPolicy,
     get_safe_dtype,
 )
-from mapping_token import BinTokenizer
+from utils.mapping_token import BinTokenizer
 # Debug-only helpers; referenced from commented-out call sites in this file
 # (e.g. ``visualize_attention_mask(att_2d_masks)`` / ``vis_atten_map(...)``).
 # Kept here so that uncommenting those lines just works without extra edits.
@@ -1359,9 +1359,9 @@ def filter_logits_top_p(logits, p):
 def test(cfg: DictConfig):
     """End-to-end smoke test that exercises all four detection datasets
     (omni6d / omni3d / bop / clutter) through the shared ``_build_vlm_3d``
-    factory in ``data_factory.py``.
+    factory in ``data/factory.py``.
     """
-    from data_factory import _build_vlm_3d, build_action_dataloader
+    from data.factory import _build_vlm_3d, build_action_dataloader
 
     weight_dtype = torch.bfloat16
     device = "cuda:0"

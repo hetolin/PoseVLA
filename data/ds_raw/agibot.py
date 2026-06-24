@@ -8,7 +8,7 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 from embodied_pi0_action.utils.vis import get_history_indices, visualize_traj, visualize_2d_3d_all
-from mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer, repeat_attribute_to_match
+from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer, repeat_attribute_to_match
 from scipy.spatial.transform import Rotation
 import torch
 import embodied_pi0_action.data.normalize as normalize

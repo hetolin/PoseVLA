@@ -45,9 +45,6 @@ PoseVLA/
 ├── train_posttrain.py          # Post-train / fine-tune entry (Robotwin etc.)
 ├── train.sh                    # Multi-GPU launch script for post-training
 ├── eval_gemini.py              # Evaluation / mAP entry (Omni3D and other 3D tasks)
-├── data_factory.py             # Unified VLM / Action DataLoader factory
-├── collators.py                # DataCollators (action / detection)
-├── mapping_token.py            # Text ↔ 3D scene encoding / decoding utilities
 │
 ├── pi0/                        # π0 / π0.5 model implementation
 │   ├── configuration_pi0.py    # PI0Config
@@ -58,9 +55,16 @@ PoseVLA/
 │   └── _lerobot_compat.py
 │
 ├── data/
+│   ├── factory.py              # Unified VLM / Action DataLoader factory
+│   ├── collators.py            # DataCollators (action / detection)
 │   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 / robotwin …)
 │   └── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
 │       └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
+│
+├── utils/                      # Shared utilities
+│   ├── mapping_token.py        # Text ↔ 3D scene encoding / decoding utilities
+│   ├── vis.py                  # Visualization helpers
+│   └── logger.py               # WandB / training-state logging
 │
 ├── config/                     # Hydra configs
 │   ├── base.yaml               # Pre-train main config

@@ -21,8 +21,8 @@ from torch.utils.data import Dataset
 from shapely.geometry import MultiPoint
 from shapely.geometry import box
 from utils.vis import visualize_2d_3d_all, visualize_views
-from mapping_token import text_to_class_attr_dict, map_3d_label_to_string
-from mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
+from utils.mapping_token import text_to_class_attr_dict, map_3d_label_to_string
+from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer
 from typing import List
 import json
 # Import crop helpers from the sibling Omni6D dataset module.
@@ -1819,7 +1819,7 @@ def main(cfg):
     train_det_dataset = Omni3DConsumerDataset(config=cfg, tokenizer=bin_tokenizer)
     # Unified collator shared by all four detection datasets.
     # For omni3d we read camera_configs from ``cfg.dataset_omni3d``.
-    from collators import CollatorForDetectionDataset
+    from data.collators import CollatorForDetectionDataset
     data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_omni3d")
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:

@@ -1,10 +1,10 @@
 from pi0.modeling_pi0 import PI0Policy, PI0Config
-from collators import CollatorForDetectionDataset
+from data.collators import CollatorForDetectionDataset
 from data.ds_train.dataset_omni3d import Omni3DConsumerDataset
 import hydra
 from omegaconf import DictConfig
 from pi0.modeling_pi0 import bin_tokenizer
-from mapping_token import decode_text_to_scene_with_tokenizer
+from utils.mapping_token import decode_text_to_scene_with_tokenizer
 from scipy.spatial.transform import Rotation as R
 import matplotlib.pyplot as plt
 import pickle

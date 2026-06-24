@@ -4,7 +4,7 @@ from collections import defaultdict
 import torch.nn.functional as F
 from scipy.spatial.transform import Rotation as R
 import numpy as np
-from mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer, repeat_attribute_to_match, text_to_class_attr_dict, map_3d_label_to_string_tokenizer_ablation
+from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_to_string_tokenizer, BinTokenizer, repeat_attribute_to_match, text_to_class_attr_dict, map_3d_label_to_string_tokenizer_ablation
 from utils.vis import visualize_2d_3d_all, visualize_traj, visualize_views
 import random
 import time
