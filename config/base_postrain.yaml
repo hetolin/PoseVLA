@@ -23,7 +23,7 @@ training:
   freeze_vision_encoder: False
 
   mixed_precision: 'bf16'                                  # choices=["no", "fp16", "bf16"]
-  batch_size: 12                                            # Fine-tuning batch size
+  batch_size: 12                                       # Fine-tuning batch size
   max_training_steps: 200_000                                        # Max number of fine-tuning steps
   max_evaluation_steps: 20                                        # Max number of fine-tuning steps
 
