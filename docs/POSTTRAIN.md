@@ -6,7 +6,7 @@ This document covers **post-training / downstream fine-tuning** of a pre-trained
 - main config: [`config/base_postrain.yaml`](../config/base_postrain.yaml)
 - dataset config: [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml)
 - dataloader / smoke test: [`data/ds_train/dataset_hdf5.py`](../data/ds_train/dataset_hdf5.py)
-- multi-GPU launch: [`train.sh`](../train.sh)
+- multi-GPU launch: [`scripts/launch/posttrain.sh`](../scripts/launch/posttrain.sh)
 - data conversion: [`utils/README.md`](../utils/README.md)
 - simulation evaluation: [`robotwin/PoseVLA/README.md`](../robotwin/PoseVLA/README.md)
 
@@ -109,10 +109,10 @@ accelerate launch --main_process_port 29504 --num_processes=8 train_posttrain.py
 ### Multi-node (cluster) — use the bundled script
 
 ```bash
-bash train.sh
+bash scripts/launch/posttrain.sh
 ```
 
-[`train.sh`](../train.sh) sets the standard NCCL / RDMA env vars for HCC machines and reads cluster-injected `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` to dispatch `accelerate launch ... train_posttrain.py`.
+[`scripts/launch/posttrain.sh`](../scripts/launch/posttrain.sh) sets the standard NCCL / RDMA env vars for HCC machines and reads cluster-injected `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` to dispatch `accelerate launch ... train_posttrain.py`.
 
 The checkpoint layout (same as pre-training) is:
 

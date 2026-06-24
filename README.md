@@ -43,7 +43,6 @@ The project supports three orthogonal training modes that can be freely combined
 PoseVLA/
 ├── train.py                    # Pre-train entry (hydra + accelerate + deepspeed)
 ├── train_posttrain.py          # Post-train / fine-tune entry (Robotwin etc.)
-├── train.sh                    # Multi-GPU launch script for post-training
 ├── eval_gemini.py              # Evaluation / mAP entry (Omni3D and other 3D tasks)
 │
 ├── pi0/                        # π0 / π0.5 model implementation
@@ -79,12 +78,18 @@ PoseVLA/
 │   └── dataset_meta/           # Per-source sample lists (json)
 │
 ├── scripts/
-│   ├── launch/                 # Pre-train launch scripts (start_h20.sh, train_h20_multiple.sh)
-│   ├── agibot/                 # Agibot download scripts
-│   ├── interndata_a1/          # InternData-A1 download / extract / config generation
-│   ├── compute_dataset_stat_hdf5_abs_joint.py
-│   ├── compute_dataset_stat_hdf5_rel_ee.py
-│   └── normalize.py
+│   ├── launch/                 # Training launch scripts
+│   │   ├── pretrain.sh         # Multi-GPU launch for pre-training (train.py)
+│   │   └── posttrain.sh        # Multi-GPU launch for post-training (train_posttrain.py)
+│   ├── download/               # Dataset download / extract / yaml-gen scripts
+│   │   ├── agibot.sh
+│   │   ├── interndata_a1.sh
+│   │   ├── interndata_a1_unzip.sh
+│   │   └── interndata_a1_generate_yaml.py
+│   └── stats/                  # Dataset normalization stats
+│       ├── compute_dataset_stat_hdf5_abs_joint.py
+│       ├── compute_dataset_stat_hdf5_rel_ee.py
+│       └── normalize.py
 │
 ├── utils/                      # Common utilities + Robotwin data processing
 │   ├── README.md               # Robotwin raw → HDF5 conversion guide

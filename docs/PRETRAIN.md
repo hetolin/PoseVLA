@@ -34,10 +34,10 @@ accelerate launch \
 ### Multi-node multi-GPU (H20 cluster)
 
 ```bash
-bash scripts/launch/train_h20_multiple.sh False    # second arg toggles debug mode
+bash scripts/launch/pretrain.sh False    # second arg toggles debug mode
 ```
 
-`train_h20_multiple.sh` reads cluster-injected env vars `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` and starts [`train.py`](../train.py) through `accelerate launch`.
+`scripts/launch/pretrain.sh` reads cluster-injected env vars `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` and starts [`train.py`](../train.py) through `accelerate launch`.
 
 Three common configurations are pre-defined inside the script (the first is enabled by default, others are kept as comments):
 
@@ -161,17 +161,16 @@ During training, validation automatically invokes these utilities and uploads PR
 
 Raw readers for each dataset:
 
-- **Agibot**: [`data/ds_raw/agibot.py`](../data/ds_raw/agibot.py), download script [`scripts/agibot/download.sh`](../scripts/agibot/download.sh)
-- **InternData-A1**: [`data/ds_raw/interndata_a1.py`](../data/ds_raw/interndata_a1.py), [`scripts/interndata_a1/`](../scripts/interndata_a1/)
+- **Agibot**: [`data/ds_raw/agibot.py`](../data/ds_raw/agibot.py), download script [`scripts/download/agibot.sh`](../scripts/download/agibot.sh)
+- **InternData-A1**: [`data/ds_raw/interndata_a1.py`](../data/ds_raw/interndata_a1.py), [`scripts/download/`](../scripts/download/) (download / unzip / yaml generation)
 - **Droid / RDT / UMI / xtrainer**: see `data/ds_raw/*.py`
 - **BOP / GraspClutter6D / Omni3D / Omni6D**: see `data/ds_train/dataset_*.py` and `config/dataset_*/`
 
 Statistics computation:
 
 ```bash
-python scripts/compute_dataset_stat_hdf5_abs_joint.py
-python scripts/compute_dataset_stat_hdf5_rel_ee.py
-python scripts/normalize.py
+python scripts/stats/compute_dataset_stat_hdf5_abs_joint.py
+python scripts/stats/compute_dataset_stat_hdf5_rel_ee.py
 ```
 
 The bin-statistics file used by the VLM 3D task is specified by `statistics_path_6d_dataset` (default: `./statistic_all_datasets/all_bins.pkl`).

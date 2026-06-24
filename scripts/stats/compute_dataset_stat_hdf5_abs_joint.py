@@ -89,7 +89,7 @@ def progress_listener(shared_counter, total_count, exit_event):
 # ============================================================
 # 主程序
 # ============================================================
-@hydra.main(version_base=None, config_path="../config", config_name="base")
+@hydra.main(version_base=None, config_path="../../config", config_name="base")
 def test_multi_processing(cfg: DictConfig):
     num_processes = 256
     dataset_configs = [
