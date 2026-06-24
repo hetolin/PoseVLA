@@ -1,4 +1,4 @@
-from posevla.modeling_posevla import PI0Policy, PI0Config
+from posevla.modeling_posevla import PoseVLAPolicy, PoseVLAConfig
 from data.collators import CollatorForDetectionDataset
 from data.ds_train.dataset_omni3d import Omni3DConsumerDataset
 import hydra
@@ -989,7 +989,7 @@ def main(cfg: DictConfig) -> None:
     cfg.training.batch_size = 1
 
     weight_dtype = torch.bfloat16
-    pi0_config = PI0Config(
+    posevla_config = PoseVLAConfig(
         tokenizer_model_path=(cfg.model.tokenizer_model_path),
         n_action_steps=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,
         chunk_size=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,  # not used
@@ -1008,8 +1008,8 @@ def main(cfg: DictConfig) -> None:
         add_image_token=True,
         add_prior=True)
 
-    # policy = PI0Policy(pi0_config)
-    policy = PI0Policy.from_pretrained(ckpt_path, local_files_only=True, config=pi0_config)
+    # policy = PoseVLAPolicy(posevla_config)
+    policy = PoseVLAPolicy.from_pretrained(ckpt_path, local_files_only=True, config=posevla_config)
     policy = policy.eval().to(weight_dtype).cuda().eval()
 
     # omni6d_dataset = Omni6dConsumerDataset(config=cfg, tokenizer=bin_tokenizer)

@@ -52,7 +52,7 @@ from torch.utils.data import ConcatDataset
 from transformers import AutoTokenizer
 
 # ===== Local modules =====
-from posevla.configuration_posevla import PI0Config
+from posevla.configuration_posevla import PoseVLAConfig
 from posevla.paligemma_with_expert import (
     PaliGemmaWithExpertConfig,
     PaliGemmaWithExpertModel,
@@ -206,15 +206,15 @@ def _resolve_posevla_path(path: str) -> str:
     return path
 
 
-class PI0Policy(PreTrainedPolicy):
+class PoseVLAPolicy(PreTrainedPolicy):
     """Wrapper class around PI0FlowMatching model to train and run inference within LeRobot."""
 
-    config_class = PI0Config
-    name = "pi0"
+    config_class = PoseVLAConfig
+    name = "posevla"
 
     def __init__(
         self,
-        config: PI0Config,
+        config: PoseVLAConfig,
     ):
         """
         Args:
@@ -294,7 +294,7 @@ class PI0Policy(PreTrainedPolicy):
         checkpoint and resize embeddings in the correct order.
 
         Typical usage:
-            policy = PI0Policy.from_pretrained(pi0_ckpt, config=pi0_config, strict=False)  # action expert
+            policy = PoseVLAPolicy.from_pretrained(pi0_ckpt, config=posevla_config, strict=False)  # action expert
             policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")                     # overwrite paligemma
 
         Correct ordering:
@@ -1365,7 +1365,7 @@ def test(cfg: DictConfig):
 
     weight_dtype = torch.bfloat16
     device = "cuda:0"
-    pi0_config = PI0Config(
+    posevla_config = PoseVLAConfig(
         empty_cameras=0,
         freeze_vision_encoder=False,
         is_knowledge_insulation=False,
@@ -1379,14 +1379,14 @@ def test(cfg: DictConfig):
 
     # (A) Load from a full lerobot_pi0 checkpoint (most common; current
     #     train_pretrain.py default).
-    # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+    # policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
 
     # (B) Use only the paligemma VLM and build the action expert from scratch.
-    policy = PI0Policy(pi0_config)
+    policy = PoseVLAPolicy(posevla_config)
     policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
 
     # (C) Action expert from pi0 + overwrite paligemma with raw VLM weights.
-    # policy = PI0Policy.from_pretrained(pi0_ckpt, config=pi0_config, strict=False)
+    # policy = PoseVLAPolicy.from_pretrained(pi0_ckpt, config=posevla_config, strict=False)
     # policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
 
     policy.to(weight_dtype).to(device)
@@ -1395,7 +1395,7 @@ def test(cfg: DictConfig):
     # 1) Action (VLA) dataloader -- single hdf5 dataset for sanity.
     # ---------------------------------------------------------------- #
     cfg.dataset.dataset_list = [cfg.dataset.xtrainer]
-    train_dataloader, _ = build_action_dataloader(cfg, pi0_config)
+    train_dataloader, _ = build_action_dataloader(cfg, posevla_config)
     batch = next(iter(train_dataloader))
     for k in batch:
         if isinstance(batch[k], torch.Tensor):

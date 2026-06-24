@@ -6,6 +6,7 @@ import numpy as np
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
+from posevla.modeling_posevla import PoseVLAConfig, PoseVLAPolicy
 from data.ds_train.dataset_hdf5 import VLAConsumerDataset, make_dataset
 from data.collators import CollatorForActionConsumerDataset as DataCollatorForPI0ConsumerDataset
 import torch
@@ -14,13 +15,9 @@ from tqdm import tqdm
 import random
 from pathlib import Path
 from transformers import logging
-from diffusers.optimization import get_scheduler
 from accelerate import Accelerator
-from accelerate.utils import set_seed
 import hydra
 from omegaconf import DictConfig, OmegaConf
-from peft import LoraConfig, get_peft_model
-from torch.utils.data import DataLoader
 from accelerate import DistributedDataParallelKwargs, InitProcessGroupKwargs
 from accelerate.utils import DeepSpeedPlugin, ProjectConfiguration
 from utils.logger import register_features_types, save_wandb, initialize_wandb
@@ -103,9 +100,6 @@ def load_action_expert(policy, action_expert_path):
     config_name="base_posttrain",
     )
 def train(cfg: DictConfig) -> None:
-    if cfg.branch == "pi0":
-from posevla.modeling_posevla import PI0Config, PI0Policy
-
     # for better performance, but reduce reproducibility
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = False
@@ -152,7 +146,7 @@ from posevla.modeling_posevla import PI0Config, PI0Policy
 
     ############# Config Model ############
     accelerator.print("Initialize Model")
-    pi0_config_kwargs = dict(
+    posevla_config_kwargs = dict(
         n_action_steps=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,
         chunk_size=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1, # not used
         optimizer_lr = cfg.training.optimizer_lr,
@@ -169,14 +163,14 @@ from posevla.modeling_posevla import PI0Config, PI0Policy
         add_image_token=cfg.training.add_image_token,
         add_prior=cfg.training.add_prior,
     )
-    pi0_config = PI0Config(**pi0_config_kwargs)
+    posevla_config = PoseVLAConfig(**posevla_config_kwargs)
 
     if cfg.resume_ckpt:
         accelerator.print(f"Resuming from checkpoint {cfg.resume_ckpt}")
-        policy = PI0Policy.from_pretrained(os.path.join(cfg.resume_ckpt, "model"), local_files_only=True)
+        policy = PoseVLAPolicy.from_pretrained(os.path.join(cfg.resume_ckpt, "model"), local_files_only=True)
     else:
         # posevlm + pi0_expert
-        policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+        policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
         print(f"load pretrain vlm model from: {cfg.model.pretrained_model_path}")
         load_action_expert(policy, cfg.model.action_expert_path)
 
@@ -196,12 +190,12 @@ from posevla.modeling_posevla import PI0Config, PI0Policy
 
     ############# Config Optimizer ############
     accelerator.print("Initialize Optimizer")
-    # optimizer, lr_scheduler = make_optimizer_and_scheduler(pi0_config, policy)
+    # optimizer, lr_scheduler = make_optimizer_and_scheduler(posevla_config, policy)
     total_train_steps = cfg.training.max_training_steps * accelerator.num_processes * cfg.training.grad_accumulation_steps
-    optimizer = pi0_config.get_optimizer_preset().build(filter(lambda p: p.requires_grad, policy.parameters()))
-    pi0_config.scheduler_warmup_steps *= accelerator.num_processes
-    pi0_config.scheduler_decay_steps *= accelerator.num_processes
-    lr_scheduler = pi0_config.get_scheduler_preset().build(optimizer, total_train_steps)
+    optimizer = posevla_config.get_optimizer_preset().build(filter(lambda p: p.requires_grad, policy.parameters()))
+    posevla_config.scheduler_warmup_steps *= accelerator.num_processes
+    posevla_config.scheduler_decay_steps *= accelerator.num_processes
+    lr_scheduler = posevla_config.get_scheduler_preset().build(optimizer, total_train_steps)
 
     ############# Config Dataset and Dataloader ############
     accelerator.print("Initialize Dataset and Dataloader")
@@ -229,7 +223,7 @@ from posevla.modeling_posevla import PI0Config, PI0Policy
 
         elif cfg.dataset.type == "lerobot":
             # Lerobot format
-            train_dataset = make_dataset(pi0_config, cfg)
+            train_dataset = make_dataset(posevla_config, cfg)
             train_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_dataset)
         else:
             raise NotImplementedError("Only support `hdf5` and `lerobot` dataset formats now.")
@@ -344,8 +338,7 @@ from posevla.modeling_posevla import PI0Config, PI0Policy
                 train_ntp_loss.append(output_dict["ntp_loss"])
             if cfg.co_training.action_training:
                 train_flow_loss.append(output_dict["flow_loss"])
-            if cfg.branch == "pi0_align":
-                train_align_loss.append(output_dict["align_loss"])
+
             if (n_iter+1) % (cfg.training.train_frequency * cfg.training.grad_accumulation_steps) == 0 and accelerator.is_main_process and not cfg.debug:
                 wandb.log(
                     {

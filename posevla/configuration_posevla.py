@@ -11,9 +11,9 @@ from lerobot.configs.policies import PreTrainedConfig
 from lerobot.configs.types import FeatureType, NormalizationMode, PolicyFeature
 
 
-@PreTrainedConfig.register_subclass("pi0_ours")
+@PreTrainedConfig.register_subclass("posevla")
 @dataclass
-class PI0Config(PreTrainedConfig):
+class PoseVLAConfig(PreTrainedConfig):
     """PoseVLA / Pi0 policy configuration.
 
     Fields are grouped by purpose for readability:

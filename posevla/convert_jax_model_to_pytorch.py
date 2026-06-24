@@ -58,7 +58,7 @@ from jax.sharding import SingleDeviceSharding
 # from openpi.training import utils
 # import openpi.training.config as _config
 
-from posevla.modeling_posevla import PI0Config, PI0Policy
+from posevla.modeling_posevla import PoseVLAConfig, PoseVLAPolicy
 from posevla.paligemma_with_expert import PaliGemmaWithExpertConfig
 
 
@@ -479,7 +479,7 @@ def update_keys_with_prefix(d: dict, prefix: str) -> dict:
     return {f"{prefix}{key}": value for key, value in d.items()}
 
 def convert_pi0_checkpoint(
-    checkpoint_dir: str, precision: str, output_path: str, model_config: PI0Config
+    checkpoint_dir: str, precision: str, output_path: str, model_config: PoseVLAConfig
 ):
     """
     Convert PI0 JAX checkpoint to PyTorch format.
@@ -582,9 +582,9 @@ def convert_pi0_checkpoint(
     )
 
     # Instantiate model
-    pi0_model = PI0Policy(pi0_config)
-    # pi0_model = openpi.models_pytorch.pi0_pytorch.PI0Pytorch(model_config)
-    print(pi0_model)
+    posevla_model = PoseVLAPolicy(posevla_config)
+    # posevla_model = openpi.models_pytorch.pi0_pytorch.PI0Pytorch(model_config)
+    print(posevla_model)
 
     paligemma_params = update_keys_with_prefix(paligemma_params, "model.paligemma_with_expert.")
     gemma_params = update_keys_with_prefix(gemma_params, "model.paligemma_with_expert.")
@@ -594,22 +594,22 @@ def convert_pi0_checkpoint(
     all_params = {**paligemma_params, **gemma_params, **projection_params}
 
     # Load state dict
-    pi0_model.load_state_dict(all_params, strict=True) # important!!!
+    posevla_model.load_state_dict(all_params, strict=True) # important!!!
 
     if precision == "float32":
-        pi0_model = pi0_model.to(torch.float32)
+        posevla_model = posevla_model.to(torch.float32)
     elif precision == "bfloat16":
-        pi0_model = pi0_model.to(torch.bfloat16)
+        posevla_model = posevla_model.to(torch.bfloat16)
     else:
         raise ValueError(f"Invalid precision: {precision}")
 
     # Save the converted model using safetensors
     os.makedirs(output_path, exist_ok=True)
 
-    pi0_model.save_pretrained(output_path, safe_serialization=True)
+    posevla_model.save_pretrained(output_path, safe_serialization=True)
 
     # # Save model weights as SafeTensors using save_model to handle tied weights
-    # safetensors.torch.save_model(pi0_model, os.path.join(output_path, "model.safetensors"))
+    # safetensors.torch.save_model(posevla_model, os.path.join(output_path, "model.safetensors"))
     #
     # # Copy assets folder if it exists
     # assets_source = pathlib.Path(checkpoint_dir).parent / "assets"
@@ -651,8 +651,8 @@ def convert_pi0_checkpoint(
         inspect_only: Only inspect parameter keys, don't convert
     """
     # model_config = _config.get_config(config_name).model
-    # if not isinstance(model_config, PI0Config):
-    #     raise ValueError(f"Config {config_name} is not a Pi0Config")
+    # if not isinstance(model_config, PoseVLAConfig):
+    #     raise ValueError(f"Config {config_name} is not a PoseVLAConfig")
     # if inspect_only:
     #     load_jax_model_and_print_keys(checkpoint_dir)
     # else:
@@ -664,7 +664,7 @@ def convert_pi0_checkpoint(
 
 if __name__ == "__main__":
     # tyro.cli(main)
-    pi0_config = PI0Config(
+    posevla_config = PoseVLAConfig(
         empty_cameras=0,
         adapt_to_pi_aloha=False,
         use_delta_joint_actions_aloha=False,
@@ -676,4 +676,4 @@ if __name__ == "__main__":
     output_path = './pretrain/pi05_base'
     precision = 'float32'
 
-    convert_pi0_checkpoint(checkpoint_dir, precision, output_path, pi0_config)
+    convert_pi0_checkpoint(checkpoint_dir, precision, output_path, posevla_config)

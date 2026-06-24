@@ -917,12 +917,12 @@ class InternDataA1LeRobotDatasetWrapper(Dataset):
         return getattr(self.dataset, name)
 
 
-def load_interndata_a1(pi0_config, cfg, bin_tokenizer, make_dataset_fn, yaml_names):
+def load_interndata_a1(posevla_config, cfg, bin_tokenizer, make_dataset_fn, yaml_names):
     """
     加载 InternData A1 数据集并进行封装
 
     参数:
-        pi0_config: pi0 模型的配置对象
+        posevla_config: PoseVLA 模型的配置对象
         cfg: 全局配置对象，需包含 dataset_lerobot 属性
         bin_tokenizer: 动作离散化的 tokenizer
         make_dataset_fn: 外部传入的 make_dataset 函数
@@ -958,7 +958,7 @@ def load_interndata_a1(pi0_config, cfg, bin_tokenizer, make_dataset_fn, yaml_nam
                 group_cfg = getattr(cfg.dataset_lerobot, yaml_name)
 
                 # 1. 调用外部传入的 make_dataset 函数
-                sub_dataset = make_dataset_fn(pi0_config, group_cfg)
+                sub_dataset = make_dataset_fn(posevla_config, group_cfg)
 
                 # 2. 封装数据集
                 wrapped_dataset = InternDataA1LeRobotDatasetWrapper(

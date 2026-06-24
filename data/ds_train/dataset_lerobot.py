@@ -153,7 +153,7 @@ def make_dataset(cfg_pi0: PreTrainedConfig, cfg: DictConfig) -> LeRobotDataset |
 
 import hydra
 from embodied_pi0_action.utils.vis import plot_all_images, plot_all_joints, plot_all_images_with_depth, batch_overlay_gaussian_mask
-from posevla.modeling_posevla import PI0Config
+from posevla.modeling_posevla import PoseVLAConfig
 @hydra.main(
         version_base=None,
     config_path="../../config",
@@ -166,7 +166,7 @@ def test(cfg):
     cfg.dataloader.pin_memory = False
     cfg.dataloader.persistent_workers = False
     bin_tokenizer = BinTokenizer(cfg.statistics_path_6d_dataset)
-    pi0_config = PI0Config(
+    posevla_config = PoseVLAConfig(
         tokenizer_model_path=(cfg.model.tokenizer_model_path),
         n_action_steps=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,
         chunk_size=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,  # not used
@@ -187,14 +187,14 @@ def test(cfg):
 
     # yaml_name = "lerobot_group01"
     # group_cfg = getattr(cfg.dataset_lerobot, yaml_name)
-    # dataset = make_dataset(pi0_config, group_cfg)
+    # dataset = make_dataset(posevla_config, group_cfg)
     #
     # dataset = LeRobotDatasetWrapper(cfg, dataset, bin_tokenizer)
 
     # yaml_names = ["lerobot_group01", "lerobot_group02", "lerobot_group03",
     #               "lerobot_group04", "lerobot_group05", "lerobot_group06"]
     yaml_names = ["lerobot_group06"]
-    all_wrapped_datasets = load_interndata_a1(pi0_config, cfg, bin_tokenizer, make_dataset, yaml_names)
+    all_wrapped_datasets = load_interndata_a1(posevla_config, cfg, bin_tokenizer, make_dataset, yaml_names)
     dataset = ConcatDataset(all_wrapped_datasets)
 
     print(len(dataset))

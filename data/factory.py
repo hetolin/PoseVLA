@@ -11,11 +11,11 @@ Public API
     Concatenate multiple datasets and return ``(concat_dataset, sampler, weights)``
     using the ``n ** alpha`` rule.
 
-- build_vlm_dataloaders(cfg, pi0_config, bin_tokenizer)
+- build_vlm_dataloaders(cfg, posevla_config, bin_tokenizer)
     Build train/val VLM dataloaders. Picks the 3D-detection branch
     (``cfg.data_3d == True``) or the agibot + interndata-a1 branch.
 
-- build_action_dataloader(cfg, pi0_config)
+- build_action_dataloader(cfg, posevla_config)
     Build the action-training dataloader for the ``hdf5`` or ``lerobot`` format.
 """
 from typing import List, Optional, Sequence, Tuple
@@ -132,7 +132,7 @@ def _build_vlm_3d(cfg, bin_tokenizer):
     return train_vlm_dataloader, val_vlm_dataloader, train_vlm_dataset
 
 
-def _build_vlm_robot(cfg, pi0_config, bin_tokenizer):
+def _build_vlm_robot(cfg, posevla_config, bin_tokenizer):
     """Build VLM dataloaders for the agibot + interndata-a1 branch."""
     from data.ds_raw.interndata_a1 import load_interndata_a1
     from data.ds_train.dataset_lerobot import make_dataset
@@ -154,7 +154,7 @@ def _build_vlm_robot(cfg, pi0_config, bin_tokenizer):
         "lerobot_group06",
     ]
     interdataa1_data_list = load_interndata_a1(
-        pi0_config, cfg, bin_tokenizer, make_dataset, yaml_names
+        posevla_config, cfg, bin_tokenizer, make_dataset, yaml_names
     )
 
     train_vlm_dataset = ConcatDataset([agibot_data] + interdataa1_data_list)
@@ -170,7 +170,7 @@ def _build_vlm_robot(cfg, pi0_config, bin_tokenizer):
     return train_vlm_dataloader, val_vlm_dataloader, train_vlm_dataset
 
 
-def build_vlm_dataloaders(cfg, pi0_config, bin_tokenizer):
+def build_vlm_dataloaders(cfg, posevla_config, bin_tokenizer):
     """Public entry: dispatch to the 3D or agibot VLM dataloader builder.
 
     Returns
@@ -179,13 +179,13 @@ def build_vlm_dataloaders(cfg, pi0_config, bin_tokenizer):
     """
     if cfg.data_3d:
         return _build_vlm_3d(cfg, bin_tokenizer)
-    return _build_vlm_robot(cfg, pi0_config, bin_tokenizer)
+    return _build_vlm_robot(cfg, posevla_config, bin_tokenizer)
 
 
 # --------------------------------------------------------------------------- #
 # Action branch
 # --------------------------------------------------------------------------- #
-def build_action_dataloader(cfg, pi0_config):
+def build_action_dataloader(cfg, posevla_config):
     """Build the action-training dataloader.
 
     Returns
@@ -204,7 +204,7 @@ def build_action_dataloader(cfg, pi0_config):
     elif cfg.dataset.type == "lerobot":
         from data.ds_train.dataset_hdf5 import make_dataset
 
-        train_dataset = make_dataset(pi0_config, cfg)
+        train_dataset = make_dataset(posevla_config, cfg)
         train_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_dataset)
     else:
         raise NotImplementedError(

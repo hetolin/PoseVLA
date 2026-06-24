@@ -20,13 +20,13 @@ class PoseVLAPolicyWrapper:
     """RoboTwin wrapper for a PoseVLA post-trained checkpoint."""
 
     def __init__(self, ckpt_path, action_type="eep"):
-        from posevla.modeling_posevla import PI0Policy
+        from posevla.modeling_posevla import PoseVLAPolicy
 
         self.weight_dtype = torch.bfloat16
         self.action_type = action_type
         self.action_dim = 16 if action_type == "eep" else 14
 
-        self.policy = PI0Policy.from_pretrained(
+        self.policy = PoseVLAPolicy.from_pretrained(
             ckpt_path,
             local_files_only=True,
             strict=False,

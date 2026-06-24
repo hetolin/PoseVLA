@@ -32,7 +32,7 @@ from tqdm import tqdm
 from transformers import logging
 
 # ===== Local modules: model =====
-from posevla.modeling_posevla import PI0Config, PI0Policy, bin_tokenizer
+from posevla.modeling_posevla import PoseVLAConfig, PoseVLAPolicy, bin_tokenizer
 
 # ===== Local modules: dataset / dataloader factory =====
 from data.factory import build_action_dataloader, build_vlm_dataloaders
@@ -139,7 +139,7 @@ def train(cfg: DictConfig) -> None:
 
     ############# Config Model ############
     accelerator.print("Initialize Model")
-    pi0_config = PI0Config(
+    posevla_config = PoseVLAConfig(
         tokenizer_model_path=(cfg.model.tokenizer_model_path),
         n_action_steps=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1,
         chunk_size=cfg.dataset.action_chunk_size + cfg.dataset.img_history_size - 1, # not used
@@ -158,36 +158,36 @@ def train(cfg: DictConfig) -> None:
         add_image_token=cfg.training.add_image_token,
         add_prior=cfg.training.add_prior,
         # 仅在主流程（from_pretrained 完整覆盖权重）下安全；
-        # 若使用 PI0Policy(pi0_config) 从零构建 + load_pretrained_vlm，请保持 False。
+        # 若使用 PoseVLAPolicy(posevla_config) 从零构建 + load_pretrained_vlm，请保持 False。
         skip_init_weights=False)
 
     if cfg.resume_ckpt:
         accelerator.print(f"Resuming from checkpoint {cfg.resume_ckpt}")
-        policy = PI0Policy.from_pretrained(os.path.join(cfg.resume_ckpt, "model"), local_files_only=True)
+        policy = PoseVLAPolicy.from_pretrained(os.path.join(cfg.resume_ckpt, "model"), local_files_only=True)
     else:
         '''pi0/pi05'''
-        # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+        # policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
         # print(f"load pretrain model from: {cfg.model.pretrained_model_path}")
 
         '''paligemma+no_expert'''
-        policy = PI0Policy(pi0_config)
+        policy = PoseVLAPolicy(posevla_config)
         policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
         print(f"load pretrain VLM from: pretrain/paligemma-3b-pt-224")
 
         '''vlm3d/4d+no expert'''
-        # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+        # policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
         # print(f"load pretrain model from: {cfg.model.pretrained_model_path}")
-        # _policy = PI0Policy(pi0_config)
+        # _policy = PoseVLAPolicy(posevla_config)
         # policy.model.paligemma_with_expert.gemma_expert = _policy.model.paligemma_with_expert.gemma_expert
 
         '''vlm3d: pi0 action expert + paligemma VLM'''
-        # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+        # policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
         # print(f"load pretrain model from: {cfg.model.pretrained_model_path}")
         # policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
         # print(f"load pretrain VLM from: pretrain/paligemma-3b-pt-224")
 
         # train only VLM
-        # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config)
+        # policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config)
         # policy.load_pretrained_vlm("google/paligemma-3b-pt-224", local_files_only=False)
         # print(f"load pretrain VLM model from: google/paligemma-3b-pt-224, action expert from pi0")
 
@@ -203,10 +203,10 @@ def train(cfg: DictConfig) -> None:
     ############# Config Optimizer ############
     accelerator.print("Initialize Optimizer")
     total_train_steps = cfg.training.max_training_steps * accelerator.num_processes * cfg.training.grad_accumulation_steps
-    optimizer = pi0_config.get_optimizer_preset().build(filter(lambda p: p.requires_grad, policy.parameters()))
-    pi0_config.scheduler_warmup_steps *= accelerator.num_processes
-    pi0_config.scheduler_decay_steps *= accelerator.num_processes
-    lr_scheduler = pi0_config.get_scheduler_preset().build(optimizer, total_train_steps)
+    optimizer = posevla_config.get_optimizer_preset().build(filter(lambda p: p.requires_grad, policy.parameters()))
+    posevla_config.scheduler_warmup_steps *= accelerator.num_processes
+    posevla_config.scheduler_decay_steps *= accelerator.num_processes
+    lr_scheduler = posevla_config.get_scheduler_preset().build(optimizer, total_train_steps)
 
     ############# Config Dataset and Dataloader ############
     accelerator.print("Initialize Dataset and Dataloader")
@@ -215,12 +215,12 @@ def train(cfg: DictConfig) -> None:
     # Load vlm dataset
     if cfg.co_training.vlm_training:
         train_vlm_dataloader, val_vlm_dataloader, train_vlm_dataset = build_vlm_dataloaders(
-            cfg, pi0_config, bin_tokenizer
+            cfg, posevla_config, bin_tokenizer
         )
 
     # Load action dataset
     if cfg.co_training.action_training:
-        train_dataloader, train_dataset = build_action_dataloader(cfg, pi0_config)
+        train_dataloader, train_dataset = build_action_dataloader(cfg, posevla_config)
 
 
     ############# Preapare `accelerator` ############
@@ -407,7 +407,7 @@ def train(cfg: DictConfig) -> None:
                             pred, gt = output_res["pred"], output_res["gt"]
                             val_log_dict[name]["pred"] = pred
                             val_log_dict[name]["gt"] = gt
-                            if pi0_config.vis_attn:
+                            if posevla_config.vis_attn:
                                 attn = output_res["attn"]
                                 val_log_dict[name]["attn"] = attn
 
@@ -460,7 +460,7 @@ def train(cfg: DictConfig) -> None:
                     wandb.log({"all_angles_subplot": wandb.Image(fig)})
                     plt.close()
 
-                    if pi0_config.vis_attn:
+                    if posevla_config.vis_attn:
                         fig = vis_atten_map(val_log_dict["action_training"]["attn"], list(images.values()), wandb=True)
                         wandb.log({f"all_attns_subplot": wandb.Image(fig)})
 

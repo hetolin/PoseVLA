@@ -46,8 +46,8 @@ PoseVLA/
 ├── eval_detection.py           # Evaluation / mAP entry (Omni3D and other 3D tasks)
 │
 ├── posevla/                    # PoseVLA model implementation (π0 / π0.5 based)
-│   ├── configuration_posevla.py    # PI0Config
-│   ├── modeling_posevla.py         # PI0Policy (PaliGemma + Action Expert + Flow Matching)
+│   ├── configuration_posevla.py    # PoseVLAConfig
+│   ├── modeling_posevla.py         # PoseVLAPolicy (PaliGemma + Action Expert + Flow Matching)
 │   ├── paligemma_with_expert.py
 │   ├── patch_embed.py
 │   ├── convert_jax_model_to_pytorch.py

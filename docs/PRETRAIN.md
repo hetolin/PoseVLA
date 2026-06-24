@@ -110,11 +110,11 @@ Dataset combinations are aggregated via the `defaults:` section — see the tail
 
 1. **Load directly from a π0 / π0.5 checkpoint**
    ```python
-   policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
+   policy = PoseVLAPolicy.from_pretrained(cfg.model.pretrained_model_path, config=posevla_config, strict=False)
    ```
 2. **PaliGemma without Action Expert (current default)**
    ```python
-   policy = PI0Policy(pi0_config)
+   policy = PoseVLAPolicy(posevla_config)
    policy.load_pretrained_vlm("pretrain/paligemma-3b-pt-224")
    ```
 3. **Use the VLM from π0 and re-initialize the Action Expert**
@@ -217,12 +217,12 @@ pip install draccus==0.10.0
 # retrain (or resume + immediately save_state) so the new ckpt is serialized correctly
 ```
 
-**Solution 2** — bypass the discriminator by passing `config=pi0_config` explicitly when reloading. In [`train_pretrain.py`](../train_pretrain.py), change the resume call to:
+**Solution 2** — bypass the discriminator by passing `config=posevla_config` explicitly when reloading. In [`train_pretrain.py`](../train_pretrain.py), change the resume call to:
 
 ```python
-policy = PI0Policy.from_pretrained(
+policy = PoseVLAPolicy.from_pretrained(
     os.path.join(cfg.resume_ckpt, "model"),
-    config=pi0_config,
+    config=posevla_config,
     local_files_only=True,
 )
 ```
