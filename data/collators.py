@@ -4,7 +4,7 @@ Detection-style branch
 ----------------------
 ``CollatorForDetectionDataset`` is shared by all four detection datasets
 (omni6d / bop / clutter / omni3d), which emit samples with an identical
-schema. Each call site chooses which sub-config (``dataset_det`` /
+schema. Each call site chooses which sub-config (``dataset_omni6d`` /
 ``dataset_bop`` / ``dataset_omni3d`` / ``dataset_clutter``) the camera
 configuration is read from.
 
@@ -28,7 +28,7 @@ class CollatorForDetectionDataset:
         The global configuration object.
     sub_cfg_key : str
         Which sub-config to read ``camera_configs`` from. One of
-        ``"dataset_det"``, ``"dataset_bop"``, ``"dataset_omni3d"``,
+        ``"dataset_omni6d"``, ``"dataset_bop"``, ``"dataset_omni3d"``,
         ``"dataset_clutter"``.
     """
 

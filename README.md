@@ -75,7 +75,7 @@ PoseVLA/
 │   ├── dataset/                # Action training dataset configs (hdf5, lerobot, robotwin)
 │   ├── dataset_bop/            # BOP series
 │   ├── dataset_clutter/        # GraspClutter6D
-│   ├── dataset_det/            # Omni6D
+│   ├── dataset_omni6d/         # Omni6D
 │   ├── dataset_omni3d/         # Omni3D (train/val/test)
 │   ├── dataset_lerobot/        # LeRobot grouped configs
 │   └── dataset_meta/           # Per-source sample lists (json)

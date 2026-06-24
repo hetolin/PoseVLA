@@ -1,7 +1,7 @@
 """
 BOP 数据集加载器,输出与 PI0 模型兼容的格式
 
-基于 BOP 标准格式,参考 dataset_det.py 的输出结构
+基于 BOP 标准格式,参考 dataset_omni6d.py 的输出结构
 支持多摄像头、3D 检测、深度图等功能
 """
 import json
@@ -528,7 +528,7 @@ class BopConsumerDataset(Dataset):
         target_obj = random.choice(objects_data)
         obj_id = target_obj['obj_id']
 
-        # 过滤出与目标物体相同类别的所有实例（与 dataset_det.py 一致）
+        # 过滤出与目标物体相同类别的所有实例（与 dataset_omni6d.py 一致）
         same_class_objects = [obj for obj in objects_data if obj['obj_id'] == obj_id]
 
         # ============================================================

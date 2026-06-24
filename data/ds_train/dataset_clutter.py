@@ -1,6 +1,6 @@
 """
 Clutter 数据集加载器,输出与 PI0 模型兼容的格式
-基于 GraspClutter6D 标准格式,参考 dataset_det.py 的输出结构
+基于 GraspClutter6D 标准格式,参考 dataset_omni6d.py 的输出结构
 支持多摄像头、3D 检测、深度图等功能
 """
 
@@ -880,7 +880,7 @@ class BopClutterConsumerDataset(Dataset):
         # 使用 entry 中的 obj_id 作为主要检测目标（确定性选择）
         obj_id = target_obj_id
 
-        # 过滤出与目标物体相同类别的所有实例（与 dataset_det.py 一致）
+        # 过滤出与目标物体相同类别的所有实例（与 dataset_omni6d.py 一致）
         same_class_objects = [obj for obj in objects_data if obj['obj_id'] == obj_id]
 
         # 验证目标物体是否在过滤后的列表中

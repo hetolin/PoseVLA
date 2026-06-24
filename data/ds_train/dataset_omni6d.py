@@ -491,10 +491,10 @@ class Omni6dConsumerDataset(Dataset):
     def __init__(self, config: Any, tokenizer: BinTokenizer) -> None:
         super().__init__()
         self.config = config
-        if not hasattr(config, "dataset_det"):
-            raise ValueError("config.dataset_det 未配置，无法构建检测数据集")
+        if not hasattr(config, "dataset_omni6d"):
+            raise ValueError("config.dataset_omni6d 未配置，无法构建检测数据集")
 
-        det_cfg = config.dataset_det
+        det_cfg = config.dataset_omni6d
         self.det_cfg = det_cfg
         self.data_root = Path(det_cfg.data_root).expanduser()
         if not self.data_root.exists():
@@ -1121,7 +1121,7 @@ class Omni6dConsumerDataset(Dataset):
 # All four detection datasets (omni6d / omni3d / bop / clutter) now share the
 # unified ``CollatorForDetectionDataset`` defined in ``collators.py``. Use:
 #     from collators import CollatorForDetectionDataset
-#     collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_det")
+#     collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_omni6d")
 
 
 def quaternion_to_rotation_matrix(quaternion: torch.Tensor) -> torch.Tensor:
@@ -1176,9 +1176,9 @@ def main(cfg):
     train_det_dataset = Omni6dConsumerDataset(config=cfg, tokenizer=bin_tokenizer)
     # Unified collator shared by all four detection datasets.
     # ``sub_cfg_key`` selects which sub-config block the camera_configs
-    # are read from (``cfg.dataset_det`` here for omni6d).
+    # are read from (``cfg.dataset_omni6d`` here for omni6d).
     from data.collators import CollatorForDetectionDataset
-    data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_det")
+    data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_omni6d")
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:
         print(batch["observation.images.top_head"].shape)

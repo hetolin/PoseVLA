@@ -1,7 +1,7 @@
 """
 Omni3D 数据集加载器,输出与 PI0 模型兼容的格式
 
-基于 DetAny3D 的 pickle 格式,参考 dataset_det.py 的输出结构
+基于 DetAny3D 的 pickle 格式,参考 dataset_omni6d.py 的输出结构
 支持多数据集、深度图、3D 检测等功能
 """
 
@@ -301,7 +301,7 @@ class Omni3DConsumerDataset(Dataset):
     Omni3D 数据集,输出与 PI0 模型兼容的格式
 
     从 pickle 文件加载数据,支持多数据集训练
-    参考 DetAny3D 的数据加载方式,输出 dataset_det.py 的格式
+    参考 DetAny3D 的数据加载方式,输出 dataset_omni6d.py 的格式
     """
 
     def __init__(self, config: Any, tokenizer: BinTokenizer, yaml_name="omni3d_train") -> None:
@@ -323,7 +323,7 @@ class Omni3DConsumerDataset(Dataset):
         self.vggt_image_size = int(omni3d_cfg.get("vggt_image_size", 518))
         self.img_history_size = int(omni3d_cfg.get("img_history_size", config.dataset.img_history_size))
 
-        # 多相机配置（参考 dataset_det.py）
+        # 多相机配置（参考 dataset_omni6d.py）
         default_camera_configs = [
             {"name": "top_head", "crop_scale": (0.90, 0.90), "aspect_ratio": (1.33, 1.33)},
             {"name": "hand_left", "crop_scale": (0.25, 0.25), "aspect_ratio": (1.33, 1.33)},
@@ -424,7 +424,7 @@ class Omni3DConsumerDataset(Dataset):
         # 坐标缓存
         self.coord_cache: Dict[Tuple[int, int], torch.Tensor] = {}
 
-        # Crop参数管理器（与 dataset_det.py 一致）
+        # Crop参数管理器（与 dataset_omni6d.py 一致）
         if CropParamManager is not None:
             self.crop_param_manager = CropParamManager(enable_random=self.enable_random_crop)
         else:

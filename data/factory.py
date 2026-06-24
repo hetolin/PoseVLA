@@ -110,7 +110,7 @@ def _build_vlm_3d(cfg, bin_tokenizer):
         sampler = None
 
     data_vlm_collator = CollatorForDetectionDataset(
-        config=cfg, sub_cfg_key="dataset_det"
+        config=cfg, sub_cfg_key="dataset_omni6d"
     )
     train_vlm_dataloader = hydra.utils.instantiate(
         cfg.dataloader,

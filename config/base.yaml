@@ -115,7 +115,7 @@ defaults:
   - _self_
   - dataset: hdf5  # [hdf5.yaml, lerobot.yaml]   dataset:文件名; lerobot:yaml文件名
 #  - dataset: lerobot  # [hdf5.yaml, lerobot.yaml]   dataset:文件名; lerobot:yaml文件名
-  - dataset_det: omni6d
+  - dataset_omni6d: omni6d
 #  - dataset_lerobot/lerobot_group01@dataset_lerobot.lerobot_group01 #不能有两个下划线
 #  - dataset_lerobot/lerobot_group02@dataset_lerobot.lerobot_group02
 #  - dataset_lerobot/lerobot_group03@dataset_lerobot.lerobot_group03

@@ -188,9 +188,9 @@ To plug a new dataset into PoseVLA:
   - Drop a sample-list JSON into `config/dataset_meta/` if your reader needs one.
 
 - **For 3D understanding data** (detection / pose):
-  - Add the dataset class under [`data/ds_train/`](../data/ds_train/) (mimic `dataset_omni3d.py` / `dataset_bop.py` / `dataset_clutter.py` / `dataset_det.py`).
+  - Add the dataset class under [`data/ds_train/`](../data/ds_train/) (mimic `dataset_omni3d.py` / `dataset_bop.py` / `dataset_clutter.py` / `dataset_omni6d.py`).
   - Add token mapping logic in [`mapping_token.py`](../mapping_token.py) if a new label format is introduced.
-  - Add a Hydra config under `config/dataset_omni3d/` / `config/dataset_bop/` / `config/dataset_clutter/` / `config/dataset_det/`.
+  - Add a Hydra config under `config/dataset_omni3d/` / `config/dataset_bop/` / `config/dataset_clutter/` / `config/dataset_omni6d/`.
 
 Remember to re-run the statistics scripts under `scripts/` so that the normalization stats and bin definitions cover your new data.
 
