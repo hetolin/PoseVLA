@@ -27,7 +27,7 @@ PoseVLA is split into two training stages, each with its own document:
 
 | Stage | Entry script | Config | Doc |
 | --- | --- | --- | --- |
-| **Pre-train** (joint VLM + Action on large-scale data) | [train.py](train.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
+| **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
 | **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_postrain.yaml](config/base_postrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
@@ -41,9 +41,9 @@ The project supports three orthogonal training modes that can be freely combined
 
 ```
 PoseVLA/
-├── train.py                    # Pre-train entry (hydra + accelerate + deepspeed)
+├── train_pretrain.py           # Pre-train entry (hydra + accelerate + deepspeed)
 ├── train_posttrain.py          # Post-train / fine-tune entry (Robotwin etc.)
-├── eval_gemini.py              # Evaluation / mAP entry (Omni3D and other 3D tasks)
+├── eval_detection.py           # Evaluation / mAP entry (Omni3D and other 3D tasks)
 │
 ├── pi0/                        # π0 / π0.5 model implementation
 │   ├── configuration_pi0.py    # PI0Config
@@ -79,7 +79,7 @@ PoseVLA/
 │
 ├── scripts/
 │   ├── launch/                 # Training launch scripts
-│   │   ├── pretrain.sh         # Multi-GPU launch for pre-training (train.py)
+│   │   ├── pretrain.sh         # Multi-GPU launch for pre-training (train_pretrain.py)
 │   │   └── posttrain.sh        # Multi-GPU launch for post-training (train_posttrain.py)
 │   ├── download/               # Dataset download / extract / yaml-gen scripts
 │   │   ├── agibot.sh
@@ -142,7 +142,7 @@ pip install --no-deps \
 
 ### 3. Pretrained weights
 
-Create a `pretrain/` directory under the project root and place any of the following weights (pick what you need — multiple loading branches are available in [train.py](train.py)):
+Create a `pretrain/` directory under the project root and place any of the following weights (pick what you need — multiple loading branches are available in [train_pretrain.py](train_pretrain.py)):
 
 ```
 pretrain/
@@ -179,7 +179,7 @@ W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your
 ## TODO List
 
 - [x] Release the training / co-training code for PoseVLA.
-- [x] Release the 3D evaluation entry (`eval_gemini.py`) with mAP / PR-curve aggregation.
+- [x] Release the 3D evaluation entry (`eval_detection.py`) with mAP / PR-curve aggregation.
 - [x] Release support for both **π0** and **π0.5** Action Experts in a single codebase (switchable via `training.pi05`).
 - [x] Release the Robotwin post-training entry (`train_posttrain.py`) and RoboTwin deployment scripts.
 - [ ] Release pretrained PoseVLA checkpoints.

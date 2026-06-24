@@ -2,7 +2,7 @@
 Dataset / DataLoader factory for PoseVLA.
 
 This module centralizes the construction of VLM and Action datasets so that
-``train.py`` and ``pi0/modeling_pi0.py::test`` (and any future entry point)
+``train_pretrain.py`` and ``pi0/modeling_pi0.py::test`` (and any future entry point)
 share the same logic.
 
 Public API
@@ -165,7 +165,7 @@ def _build_vlm_robot(cfg, pi0_config, bin_tokenizer):
     train_vlm_dataloader = hydra.utils.instantiate(
         cfg.dataloader, dataset=train_vlm_dataset, collate_fn=data_vlm_collator
     )
-    # NOTE: validation reuses the train dataset here (mirrors original train.py).
+    # NOTE: validation reuses the train dataset here (mirrors original train_pretrain.py).
     val_vlm_dataloader = hydra.utils.instantiate(
         cfg.dataloader, dataset=train_vlm_dataset, collate_fn=data_vlm_collator
     )

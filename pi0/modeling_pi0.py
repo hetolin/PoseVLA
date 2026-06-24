@@ -1378,7 +1378,7 @@ def test(cfg: DictConfig):
     )
 
     # (A) Load from a full lerobot_pi0 checkpoint (most common; current
-    #     train.py default).
+    #     train_pretrain.py default).
     # policy = PI0Policy.from_pretrained(cfg.model.pretrained_model_path, config=pi0_config, strict=False)
 
     # (B) Use only the paligemma VLM and build the action expert from scratch.

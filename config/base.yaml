@@ -132,4 +132,4 @@ defaults:
   - dataset_clutter/clutter_train@dataset_clutter.clutter_train
   - dataset_clutter/clutter_test@dataset_clutter.clutter_test
 
-# accelerate launch --multi_gpu --num_machines 1  --num_processes 8 --mixed_precision=bf16 --main_process_ip $CHIEF_IP  --main_process_port 56789 --machine_rank $INDEX train.py
+# accelerate launch --multi_gpu --num_machines 1  --num_processes 8 --mixed_precision=bf16 --main_process_ip $CHIEF_IP  --main_process_port 56789 --machine_rank $INDEX train_pretrain.py

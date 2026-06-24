@@ -2,7 +2,7 @@
 
 This document covers **large-scale pre-training** of the PoseVLA backbone, using:
 
-- entry script: [`train.py`](../train.py)
+- entry script: [`train_pretrain.py`](../train_pretrain.py)
 - main config: [`config/base.yaml`](../config/base.yaml)
 - launch scripts: [`scripts/launch/`](../scripts/launch/)
 
@@ -28,7 +28,7 @@ accelerate launch \
   --mixed_precision=bf16 \
   --main_process_ip 127.0.0.1 --main_process_port 56789 \
   --machine_rank 0 \
-  train.py
+  train_pretrain.py
 ```
 
 ### Multi-node multi-GPU (H20 cluster)
@@ -37,7 +37,7 @@ accelerate launch \
 bash scripts/launch/pretrain.sh False    # second arg toggles debug mode
 ```
 
-`scripts/launch/pretrain.sh` reads cluster-injected env vars `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` and starts [`train.py`](../train.py) through `accelerate launch`.
+`scripts/launch/pretrain.sh` reads cluster-injected env vars `RANK / MASTER_ADDR / MASTER_PORT / WORLD_SIZE / GPU_NUM` and starts [`train_pretrain.py`](../train_pretrain.py) through `accelerate launch`.
 
 Three common configurations are pre-defined inside the script (the first is enabled by default, others are kept as comments):
 
@@ -52,7 +52,7 @@ Three common configurations are pre-defined inside the script (the first is enab
 `base.yaml` is automatically saved to `ckpt_save_dir/base.yaml` at each checkpoint and is merged back in on resume:
 
 ```bash
-python train.py resume_ckpt=/path/to/exp/29999
+python train_pretrain.py resume_ckpt=/path/to/exp/29999
 ```
 
 The checkpoint layout is:
@@ -106,7 +106,7 @@ Dataset combinations are aggregated via the `defaults:` section — see the tail
 
 ## 🧠 Model Loading Branches
 
-[`train.py`](../train.py) provides several weight-composition strategies (kept as comments, enable as needed):
+[`train_pretrain.py`](../train_pretrain.py) provides several weight-composition strategies (kept as comments, enable as needed):
 
 1. **Load directly from a π0 / π0.5 checkpoint**
    ```python
@@ -129,10 +129,10 @@ Dataset combinations are aggregated via the `defaults:` section — see the tail
 Entry point for 3D detection / pose tasks:
 
 ```bash
-python eval_gemini.py
+python eval_detection.py
 ```
 
-> ⚠️ **Note**: [`eval_gemini.py`](../eval_gemini.py) currently hard-codes the checkpoint path and the
+> ⚠️ **Note**: [`eval_detection.py`](../eval_detection.py) currently hard-codes the checkpoint path and the
 > output directory inside its `main()` function (it does **not** read `cfg.resume_ckpt`).
 > Open the file and edit these two lines before running:
 >
@@ -148,7 +148,7 @@ python eval_gemini.py
 > and runs `policy.forward_evaluate_ntp(...)`; switching to other benchmarks
 > requires code changes.
 
-`eval_gemini.py` provides:
+`eval_detection.py` provides:
 
 - `evaluate_sample(...)` — per-sample 3D IoU / rotation / translation errors
 - `compute_metrics_summary(...)` — mAP / PR curve aggregation (VOC 11-point & 101-point)
@@ -217,7 +217,7 @@ pip install draccus==0.10.0
 # retrain (or resume + immediately save_state) so the new ckpt is serialized correctly
 ```
 
-**Solution 2** — bypass the discriminator by passing `config=pi0_config` explicitly when reloading. In [`train.py`](../train.py), change the resume call to:
+**Solution 2** — bypass the discriminator by passing `config=pi0_config` explicitly when reloading. In [`train_pretrain.py`](../train_pretrain.py), change the resume call to:
 
 ```python
 policy = PI0Policy.from_pretrained(

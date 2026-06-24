@@ -82,7 +82,7 @@ accelerate launch \
   --machine_rank $RANK \
   --main_process_ip $MASTER_ADDR \
   --main_process_port $MASTER_PORT  \
-  train.py \
+  train_pretrain.py \
   wandb_project="pi0_ntp" \
   branch=$BRANCH \
   exp_name=$EXP_NAME \
