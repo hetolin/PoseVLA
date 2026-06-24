@@ -33,7 +33,7 @@ import shutil
 # GraspClutter6D API 导入（用于加载抓取数据）
 GRASPCLUTTER6D_AVAILABLE = True
 GRASP_HEIGHT = 0.02
-from graspclutter6dAPI import GraspGroup, generate_views, transform_points, batch_viewpoint_params_to_matrix
+from data.ds_train.graspclutter6dAPI import GraspGroup, generate_views, transform_points, batch_viewpoint_params_to_matrix
 
 
 def remap_pose(trans, rot_matrix):

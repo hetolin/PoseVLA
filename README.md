@@ -49,7 +49,6 @@ PoseVLA/
 ├── dataset_wan.py              # Robotwin post-train DataLoader + smoke test
 ├── collators.py                # DataCollators (action / detection)
 ├── mapping_token.py            # Text ↔ 3D scene encoding / decoding utilities
-├── graspclutter6dAPI.py        # GraspClutter6D dataset API
 │
 ├── pi0/                        # π0 / π0.5 model implementation
 │   ├── configuration_pi0.py    # PI0Config
@@ -62,6 +61,7 @@ PoseVLA/
 ├── data/
 │   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 …)
 │   ├── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
+│   │   └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
 │   └── hdf5_robotwin_dataset.py
 │
 ├── config/                     # Hydra configs
