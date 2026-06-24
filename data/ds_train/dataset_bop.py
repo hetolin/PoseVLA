@@ -1039,7 +1039,7 @@ class BopConsumerDataset(Dataset):
 # All four detection datasets (omni6d / omni3d / bop / clutter) now share the
 # unified ``CollatorForDetectionDataset`` defined in ``collators.py``. Use:
 #     from collators import CollatorForDetectionDataset
-#     collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_bop")
+#     collator = CollatorForDetectionDataset()
 
 
 # ==================== 测试代码 ====================
@@ -1053,9 +1053,9 @@ def main(cfg):
     bin_tokenizer = BinTokenizer(cfg.statistics_path_6d_dataset)
     train_det_dataset = BopConsumerDataset(config=cfg, tokenizer=bin_tokenizer, yaml_name="bop_train")
     # Unified collator shared by all four detection datasets.
-    # For BOP we read camera_configs from ``cfg.dataset_bop``.
+    # Parameter-free: ``num_cameras`` is inferred from each sample.
     from data.collators import CollatorForDetectionDataset
-    data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_bop")
+    data_det_collator = CollatorForDetectionDataset()
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:
         print(batch["observation.images.top_head"].shape)

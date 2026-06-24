@@ -3,10 +3,9 @@
 Detection-style branch
 ----------------------
 ``CollatorForDetectionDataset`` is shared by all four detection datasets
-(omni6d / bop / clutter / omni3d), which emit samples with an identical
-schema. Each call site chooses which sub-config (``dataset_omni6d`` /
-``dataset_bop`` / ``dataset_omni3d`` / ``dataset_clutter``) the camera
-configuration is read from.
+(omni6d / bop / clutter / omni3d). They all emit samples with an identical
+schema (3 cameras: top_head / hand_left / hand_right), so the collator
+infers ``num_cameras`` directly from each sample and needs no config.
 
 Action-style branch
 -------------------
@@ -22,35 +21,16 @@ import torch
 class CollatorForDetectionDataset:
     """Assemble a detection batch in the format expected by the PI0 model.
 
-    Parameters
-    ----------
-    config : OmegaConf-like
-        The global configuration object.
-    sub_cfg_key : str
-        Which sub-config to read ``camera_configs`` from. One of
-        ``"dataset_omni6d"``, ``"dataset_bop"``, ``"dataset_omni3d"``,
-        ``"dataset_clutter"``.
+    All four detection datasets (omni6d / bop / clutter / omni3d) emit
+    samples with the same multi-camera schema (3 cameras in the order
+    ``top_head, hand_left, hand_right``), so this collator is parameter-free
+    and infers ``num_cameras`` from the first sample at call time.
     """
 
-    DEFAULT_CAMERA_CONFIGS = [
-        {"name": "top_head",   "crop_scale": (0.90, 0.90), "aspect_ratio": (1.33, 1.33)},
-        {"name": "hand_left",  "crop_scale": (0.25, 0.25), "aspect_ratio": (1.33, 1.33)},
-        {"name": "hand_right", "crop_scale": (0.55, 0.55), "aspect_ratio": (1.33, 1.33)},
-    ]
-
-    def __init__(self, config: Any, sub_cfg_key: str) -> None:
-        self.config = config
-        sub_cfg = getattr(config, sub_cfg_key, None)
-        if sub_cfg is None:
-            raise ValueError(f"config.{sub_cfg_key} is not configured")
-
-        self.camera_configs = sub_cfg.get("camera_configs", self.DEFAULT_CAMERA_CONFIGS)
-        self.num_cameras = len(self.camera_configs)
-        self.camera_names = [
-            c.get("name", f"camera_{i}") for i, c in enumerate(self.camera_configs)
-        ]
-
     def __call__(self, instances: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+        # Number of cameras is inferred from the first sample.
+        num_cameras = len(instances[0]["images"])
+
         # Multi-camera image tensor: [B, num_cameras, 3, 224, 224], scaled to 0-1
         batch_images = [torch.stack(sample["images"], dim=0) for sample in instances]
         images_multi = torch.stack(batch_images, dim=0).float() / 255.0
@@ -69,28 +49,28 @@ class CollatorForDetectionDataset:
 
         # K: [B, num_cameras, 3, 3]
         K_multi = torch.stack(
-            [torch.stack([sample["camera_K"][i] for i in range(self.num_cameras)], dim=0)
+            [torch.stack([sample["camera_K"][i] for i in range(num_cameras)], dim=0)
              for sample in instances],
             dim=0,
         )
 
         # rays: [B, num_cameras, 3, H, W]
         rays_multi = torch.stack(
-            [torch.stack([sample["camera_rays"][i] for i in range(self.num_cameras)], dim=0)
+            [torch.stack([sample["camera_rays"][i] for i in range(num_cameras)], dim=0)
              for sample in instances],
             dim=0,
         )
 
         # know_depth: [B, num_cameras, 2, H, W]
         know_depth_multi = torch.stack(
-            [torch.stack([sample["camera_know_depth"][i] for i in range(self.num_cameras)], dim=0)
+            [torch.stack([sample["camera_know_depth"][i] for i in range(num_cameras)], dim=0)
              for sample in instances],
             dim=0,
         )
 
         # depth: [B, num_cameras, H, W]
         depth_multi = torch.stack(
-            [torch.stack([sample["camera_depth"][i].squeeze(0) for i in range(self.num_cameras)], dim=0)
+            [torch.stack([sample["camera_depth"][i].squeeze(0) for i in range(num_cameras)], dim=0)
              for sample in instances],
             dim=0,
         )

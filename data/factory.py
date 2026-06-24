@@ -109,9 +109,7 @@ def _build_vlm_3d(cfg, bin_tokenizer):
         train_vlm_dataset = ConcatDataset(sub_datasets)
         sampler = None
 
-    data_vlm_collator = CollatorForDetectionDataset(
-        config=cfg, sub_cfg_key="dataset_omni6d"
-    )
+    data_vlm_collator = CollatorForDetectionDataset()
     train_vlm_dataloader = hydra.utils.instantiate(
         cfg.dataloader,
         dataset=train_vlm_dataset,

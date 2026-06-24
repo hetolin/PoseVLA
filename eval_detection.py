@@ -1014,9 +1014,7 @@ def main(cfg: DictConfig) -> None:
 
     # omni6d_dataset = Omni6dConsumerDataset(config=cfg, tokenizer=bin_tokenizer)
     omni3d_dataset = Omni3DConsumerDataset(config=cfg, tokenizer=bin_tokenizer, yaml_name="omni3d_test")
-    data_vlm_collator = CollatorForDetectionDataset(
-        config=cfg, sub_cfg_key="dataset_omni6d"
-    )
+    data_vlm_collator = CollatorForDetectionDataset()
     train_vlm_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=omni3d_dataset, collate_fn=data_vlm_collator)
 
     all_results = []

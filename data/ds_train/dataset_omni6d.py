@@ -1121,7 +1121,7 @@ class Omni6dConsumerDataset(Dataset):
 # All four detection datasets (omni6d / omni3d / bop / clutter) now share the
 # unified ``CollatorForDetectionDataset`` defined in ``collators.py``. Use:
 #     from collators import CollatorForDetectionDataset
-#     collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_omni6d")
+#     collator = CollatorForDetectionDataset()
 
 
 def quaternion_to_rotation_matrix(quaternion: torch.Tensor) -> torch.Tensor:
@@ -1175,10 +1175,9 @@ def main(cfg):
     bin_tokenizer = BinTokenizer(cfg.statistics_path_6d_dataset)
     train_det_dataset = Omni6dConsumerDataset(config=cfg, tokenizer=bin_tokenizer)
     # Unified collator shared by all four detection datasets.
-    # ``sub_cfg_key`` selects which sub-config block the camera_configs
-    # are read from (``cfg.dataset_omni6d`` here for omni6d).
+    # Parameter-free: it infers ``num_cameras`` from each sample at runtime.
     from data.collators import CollatorForDetectionDataset
-    data_det_collator = CollatorForDetectionDataset(config=cfg, sub_cfg_key="dataset_omni6d")
+    data_det_collator = CollatorForDetectionDataset()
     train_det_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_det_dataset, collate_fn=data_det_collator)
     for batch in train_det_dataloader:
         print(batch["observation.images.top_head"].shape)
