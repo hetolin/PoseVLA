@@ -21,10 +21,11 @@ from hydra.utils import instantiate
 from PIL import Image
 from torch.utils.data import ConcatDataset, Dataset
 from torchvision import transforms
+import hydra
 
 # ===== Local modules =====
-from embodied_pi0_action.utils.image_corrupt import image_corrupt
-
+from utils.image_corrupt import image_corrupt
+from utils.vis import plot_all_images, plot_all_joints, plot_all_images_with_depth
 
 def process_video_images(current_image, future_images, target_height, target_width):
     """
@@ -447,15 +448,6 @@ def make_dataset(cfg_pi0: PreTrainedConfig, cfg: DictConfig) -> LeRobotDataset |
 # =============================================================================
 # Test entry
 # =============================================================================
-
-import hydra
-from embodied_pi0_action.utils.vis import (
-    plot_all_images,
-    plot_all_joints,
-    plot_all_images_with_depth,
-)
-
-
 @hydra.main(
     version_base=None,
     config_path="../../config",

@@ -51,7 +51,7 @@ Key fields to check:
 
 ## 3. Prepare the Robotwin dataset
 
-Raw RoboTwin 2.0 episodes need to be converted into the HDF5 layout consumed by [`data/hdf5_robotwin_dataset.py`](../data/hdf5_robotwin_dataset.py). Follow [`utils/README.md`](../utils/README.md) for the full pipeline:
+Raw RoboTwin 2.0 episodes need to be converted into the HDF5 layout consumed by [`data/ds_raw/robotwin.py`](../data/ds_raw/robotwin.py). Follow [`utils/README.md`](../utils/README.md) for the full pipeline:
 
 1. **Convert episodes** with `python utils/process_data_all.py` → `processed_data/<task_name>-<task_config>-<expert_data_num>/episode_*/episode_*.hdf5`.
 2. **Compute normalization** with `python utils/norm_robotwin.py --mode eep` → `qpos_mean_std_online.pkl`.

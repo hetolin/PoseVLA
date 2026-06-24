@@ -59,10 +59,9 @@ PoseVLA/
 │   └── _lerobot_compat.py
 │
 ├── data/
-│   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 …)
-│   ├── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
-│   │   └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
-│   └── hdf5_robotwin_dataset.py
+│   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 / robotwin …)
+│   └── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
+│       └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
 │
 ├── config/                     # Hydra configs
 │   ├── base.yaml               # Pre-train main config

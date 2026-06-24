@@ -263,6 +263,36 @@ def plot_all_joints(action, obs, save_path='all_joints.png', wandb=False):
 # obs = np.random.randn(100, 6)
 # plot_all_joints(gt, obs, save_path='all_joints.png')
 
+def plot_all_images_with_depth(top_cam, left_cam, right_cam, top_depth, left_depth, right_depth, save_path='all_images.png'):
+    # (HISTORY_SIZE, H, W, 3) for RGB, (HISTORY_SIZE, H, W) for Depth
+    IMG_HISTORY_SIZE = top_cam.shape[0]
+    cams_rgb = [top_cam, left_cam, right_cam]
+    cams_depth = [top_depth, left_depth, right_depth]
+    cam_names = ['top_cam', 'left_cam', 'right_cam']
+
+    # 每个摄像头两列：RGB和Depth
+    fig, axes = plt.subplots(nrows=3, ncols=IMG_HISTORY_SIZE*2, figsize=(IMG_HISTORY_SIZE * 4, 6), squeeze=False)
+
+    for row, (rgb, depth, name) in enumerate(zip(cams_rgb, cams_depth, cam_names)):
+        for col in range(IMG_HISTORY_SIZE):
+            # RGB
+            axes[row, col*2].imshow(convert_to_opencv_format(rgb[col]))
+            axes[row, col*2].axis('off')
+            if row == 0:
+                axes[row, col*2].set_title(f'RGB {col+1}')
+            # Depth, 可选配色(例如'viridis'或'gray')
+            axes[row, col*2+1].imshow(depth[col].squeeze(), cmap='viridis') #(H, W) as inputs
+            axes[row, col*2+1].axis('off')
+            if row == 0:
+                axes[row, col*2+1].set_title(f'Depth {col+1}')
+        axes[row, 0].set_ylabel(name, rotation=0, labelpad=40, fontsize=12, va='center')
+
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.close()
+    print(f"Saved all images to {save_path}")
+
+
 def convert_to_opencv_format(image):
     """
     将图像转换为适合OpenCV处理的标准格式

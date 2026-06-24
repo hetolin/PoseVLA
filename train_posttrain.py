@@ -6,7 +6,8 @@ import numpy as np
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from dataset_wan import DataCollatorForPI0ConsumerDataset, VLAConsumerDataset, make_dataset
+from data.ds_train.dataset_hdf5 import VLAConsumerDataset, make_dataset
+from collators import CollatorForActionConsumerDataset as DataCollatorForPI0ConsumerDataset
 import torch
 import wandb
 from tqdm import tqdm

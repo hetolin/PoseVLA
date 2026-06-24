@@ -34,7 +34,7 @@ video_width: 320       # Video frame width
 
 
 xtrainer:
-  _target_: data.hdf5_robotwin_dataset.HDF5VLADataset
+  _target_: data.ds_raw.robotwin.HDF5VLADataset
   sample_weights:
     robotwin_processed: 1.0
     robotwin_processed_random: 10.0
