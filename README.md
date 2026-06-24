@@ -28,7 +28,7 @@ PoseVLA is split into two training stages, each with its own document:
 | Stage | Entry script | Config | Doc |
 | --- | --- | --- | --- |
 | **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
-| **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_postrain.yaml](config/base_postrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
+| **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
 The project supports three orthogonal training modes that can be freely combined:
@@ -70,7 +70,7 @@ PoseVLA/
 │
 ├── config/                     # Hydra configs
 │   ├── base.yaml               # Pre-train main config
-│   ├── base_postrain.yaml      # Post-train (Robotwin) main config
+│   ├── base_posttrain.yaml      # Post-train (Robotwin) main config
 │   ├── zero0.json / zero2.json / zero3_offload.json   # DeepSpeed configs
 │   ├── dataset/                # Action training dataset configs (hdf5, lerobot, robotwin)
 │   ├── dataset_bop/            # BOP series

@@ -100,7 +100,7 @@ def load_action_expert(policy, action_expert_path):
 @hydra.main(
         version_base=None,
         config_path="./config",
-        config_name="base_postrain",
+    config_name="base_posttrain",
     )
 def train(cfg: DictConfig) -> None:
     if cfg.branch == "pi0":

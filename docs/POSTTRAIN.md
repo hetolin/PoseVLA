@@ -3,7 +3,7 @@
 This document covers **post-training / downstream fine-tuning** of a pre-trained PoseVLA checkpoint on a specific robot dataset. The reference setup here is **RoboTwin 2.0** (HDF5, EEP actions), but the same pipeline can be reused for other robots by swapping the dataset config.
 
 - entry script: [`train_posttrain.py`](../train_posttrain.py)
-- main config: [`config/base_postrain.yaml`](../config/base_postrain.yaml)
+- main config: [`config/base_posttrain.yaml`](../config/base_posttrain.yaml)
 - dataset config: [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml)
 - dataloader / smoke test: [`data/ds_train/dataset_hdf5.py`](../data/ds_train/dataset_hdf5.py)
 - multi-GPU launch: [`scripts/launch/posttrain.sh`](../scripts/launch/posttrain.sh)
@@ -22,11 +22,11 @@ For **pre-training** the PoseVLA backbone, see [PRETRAIN.md](PRETRAIN.md).
 export DEV_PATH=/home/tione/notebook/home/henryhyyu/RoboTwin/policy
 ```
 
-`base_postrain.yaml` resolves `dev_dir: ${oc.env:DEV_PATH}/PoseVLA` and writes checkpoints to `${dev_dir}/ckpt/${exp_name}`.
+`base_posttrain.yaml` resolves `dev_dir: ${oc.env:DEV_PATH}/PoseVLA` and writes checkpoints to `${dev_dir}/ckpt/${exp_name}`.
 
 ---
 
-## 2. Configure [`config/base_postrain.yaml`](../config/base_postrain.yaml)
+## 2. Configure [`config/base_posttrain.yaml`](../config/base_posttrain.yaml)
 
 Key fields to check:
 
