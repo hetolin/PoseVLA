@@ -61,7 +61,10 @@ PoseVLA/
 │       └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
 │
 ├── utils/                      # Shared utilities
+│   ├── process_data_all.py     # Robotwin raw → HDF5 conversion
 │   ├── mapping_token.py        # Text ↔ 3D scene encoding / decoding utilities
+│   ├── transform_utils.py      # SE(3) / pose math helpers
+│   ├── image_corrupt.py        # Image augmentation
 │   ├── vis.py                  # Visualization helpers
 │   └── logger.py               # WandB / training-state logging
 │
@@ -89,14 +92,13 @@ PoseVLA/
 │   └── stats/                  # Dataset normalization stats
 │       ├── compute_dataset_stat_hdf5_abs_joint.py
 │       ├── compute_dataset_stat_hdf5_rel_ee.py
+│       ├── norm_robotwin.py    # Robotwin EEP / qpos normalization stats
 │       └── normalize.py
 │
-├── utils/                      # Common utilities + Robotwin data processing
-│   ├── README.md               # Robotwin raw → HDF5 conversion guide
-│   ├── process_data_all.py     # Robotwin raw → HDF5 conversion
-│   ├── norm_robotwin.py        # Robotwin EEP normalization stats
-│   ├── generate_t5_seen.py     # (optional) T5 text embeddings
-│   ├── logger.py / vis.py / transform_utils.py / image_corrupt.py
+├── docs/                       # Stage-level documents
+│   ├── PRETRAIN.md             # Pre-train guide
+│   ├── POSTTRAIN.md            # Post-train / fine-tune guide (Robotwin)
+│   └── ROBOTWIN_DATA.md        # Robotwin raw → HDF5 conversion guide
 │
 ├── robotwin/PoseVLA/           # RoboTwin simulation deploy + eval
 └── google/paligemma-3b-pt-224/ # Local PaliGemma tokenizer / config

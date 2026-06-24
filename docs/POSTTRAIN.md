@@ -7,7 +7,7 @@ This document covers **post-training / downstream fine-tuning** of a pre-trained
 - dataset config: [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml)
 - dataloader / smoke test: [`data/ds_train/dataset_hdf5.py`](../data/ds_train/dataset_hdf5.py)
 - multi-GPU launch: [`scripts/launch/posttrain.sh`](../scripts/launch/posttrain.sh)
-- data conversion: [`utils/README.md`](../utils/README.md)
+- data conversion: [`docs/ROBOTWIN_DATA.md`](ROBOTWIN_DATA.md)
 - simulation evaluation: [`robotwin/PoseVLA/README.md`](../robotwin/PoseVLA/README.md)
 
 For **pre-training** the PoseVLA backbone, see [PRETRAIN.md](PRETRAIN.md).
@@ -51,11 +51,10 @@ Key fields to check:
 
 ## 3. Prepare the Robotwin dataset
 
-Raw RoboTwin 2.0 episodes need to be converted into the HDF5 layout consumed by [`data/ds_raw/robotwin.py`](../data/ds_raw/robotwin.py). Follow [`utils/README.md`](../utils/README.md) for the full pipeline:
+Raw RoboTwin 2.0 episodes need to be converted into the HDF5 layout consumed by [`data/ds_raw/robotwin.py`](../data/ds_raw/robotwin.py). Follow [`docs/ROBOTWIN_DATA.md`](ROBOTWIN_DATA.md) for the full pipeline:
 
 1. **Convert episodes** with `python utils/process_data_all.py` → `processed_data/<task_name>-<task_config>-<expert_data_num>/episode_*/episode_*.hdf5`.
-2. **Compute normalization** with `python utils/norm_robotwin.py --mode eep` → `qpos_mean_std_online.pkl`.
-3. *(Optional)* generate T5 text embeddings via `python utils/generate_t5_seen.py`. Robotwin **action-only** post-training does not require this.
+2. **Compute normalization** with `python scripts/stats/norm_robotwin.py --mode eep` → `qpos_mean_std_online.pkl`.
 
 Then verify [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml):
 
