@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import ClassVar
 
-from pi0._lerobot_compat import (
+from posevla._lerobot_compat import (
     AdamWConfig,
     CosineDecayWithWarmupSchedulerConfig,
     LEROBOT_VERSION as _LEROBOT_VERSION,  # re-exported in case downstream code reads it

@@ -11,7 +11,7 @@ from utils.vis import visualize_2d_3d_all, visualize_traj, visualize_views
 from torch.utils.data import ConcatDataset
 import time
 
-from pi0._lerobot_compat import (
+from posevla._lerobot_compat import (
     ImageTransforms,
     ImageTransformsConfig,
     LeRobotDataset,
@@ -153,7 +153,7 @@ def make_dataset(cfg_pi0: PreTrainedConfig, cfg: DictConfig) -> LeRobotDataset |
 
 import hydra
 from embodied_pi0_action.utils.vis import plot_all_images, plot_all_joints, plot_all_images_with_depth, batch_overlay_gaussian_mask
-from pi0.modeling_pi0 import PI0Config
+from posevla.modeling_posevla import PI0Config
 @hydra.main(
         version_base=None,
     config_path="../../config",

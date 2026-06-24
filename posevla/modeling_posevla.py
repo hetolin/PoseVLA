@@ -52,12 +52,12 @@ from torch.utils.data import ConcatDataset
 from transformers import AutoTokenizer
 
 # ===== Local modules =====
-from pi0.configuration_pi0 import PI0Config
-from pi0.paligemma_with_expert import (
+from posevla.configuration_posevla import PI0Config
+from posevla.paligemma_with_expert import (
     PaliGemmaWithExpertConfig,
     PaliGemmaWithExpertModel,
 )
-from pi0._lerobot_compat import (
+from posevla._lerobot_compat import (
     ACTION,
     OBS_IMAGES,
     OBS_STATE,

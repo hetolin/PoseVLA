@@ -14,7 +14,7 @@ from transformers.cache_utils import Cache
 from transformers.modeling_utils import no_init_weights
 from transformers.models.auto import CONFIG_MAPPING
 
-from pi0.patch_embed import PatchEmbed_Mlp
+from posevla.patch_embed import PatchEmbed_Mlp
 class GemmaRMSNorm(nn.Module):
     def __init__(self, dim: int, eps: float = 1e-6, cond_dim: Optional[int] = None):
         super().__init__()

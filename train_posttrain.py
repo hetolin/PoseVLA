@@ -104,7 +104,7 @@ def load_action_expert(policy, action_expert_path):
     )
 def train(cfg: DictConfig) -> None:
     if cfg.branch == "pi0":
-        from pi0.modeling_pi0 import PI0Config, PI0Policy
+from posevla.modeling_posevla import PI0Config, PI0Policy
 
     # for better performance, but reduce reproducibility
     torch.backends.cudnn.benchmark = True

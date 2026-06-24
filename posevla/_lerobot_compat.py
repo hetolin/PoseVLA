@@ -12,7 +12,7 @@ sub-packages). Multiple files in this repository used to repeat the same
 This module performs the version probe **once** and re-exports a stable set
 of symbols that downstream code can simply do::
 
-    from pi0._lerobot_compat import (
+    from posevla._lerobot_compat import (
         LEROBOT_VERSION,
         PreTrainedPolicy,
         get_safe_dtype,

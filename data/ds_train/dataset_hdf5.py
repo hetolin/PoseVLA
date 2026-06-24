@@ -355,7 +355,7 @@ def resize_with_pad(img, width, height, pad_value=-1, mode="bilinear"):
 import logging
 from pprint import pformat
 
-from pi0._lerobot_compat import (
+from posevla._lerobot_compat import (
     ImageTransforms,
     ImageTransformsConfig,
     LeRobotDataset,

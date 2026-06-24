@@ -2,7 +2,7 @@
 Dataset / DataLoader factory for PoseVLA.
 
 This module centralizes the construction of VLM and Action datasets so that
-``train_pretrain.py`` and ``pi0/modeling_pi0.py::test`` (and any future entry point)
+``train_pretrain.py`` and ``posevla/modeling_posevla.py::test`` (and any future entry point)
 share the same logic.
 
 Public API

@@ -58,8 +58,8 @@ from jax.sharding import SingleDeviceSharding
 # from openpi.training import utils
 # import openpi.training.config as _config
 
-from pi0.modeling_pi0 import PI0Config, PI0Policy
-from pi0.paligemma_with_expert import PaliGemmaWithExpertConfig
+from posevla.modeling_posevla import PI0Config, PI0Policy
+from posevla.paligemma_with_expert import PaliGemmaWithExpertConfig
 
 
 def slice_paligemma_state_dict(state_dict, config):

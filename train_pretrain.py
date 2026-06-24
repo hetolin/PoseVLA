@@ -32,7 +32,7 @@ from tqdm import tqdm
 from transformers import logging
 
 # ===== Local modules: model =====
-from pi0.modeling_pi0 import PI0Config, PI0Policy, bin_tokenizer
+from posevla.modeling_posevla import PI0Config, PI0Policy, bin_tokenizer
 
 # ===== Local modules: dataset / dataloader factory =====
 from data.factory import build_action_dataloader, build_vlm_dataloaders
