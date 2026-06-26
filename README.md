@@ -29,6 +29,7 @@ PoseVLA is split into two training stages, each with its own document:
 | --- | --- | --- | --- |
 | **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
 | **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
+| **Robotwin data conversion** (raw → HDF5 + normalization) | [utils/process_data_all.py](utils/process_data_all.py) | [config/dataset/robotwin.yaml](config/dataset/robotwin.yaml) | [docs/ROBOTWIN_DATA.md](docs/ROBOTWIN_DATA.md) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
 The project supports three orthogonal training modes that can be freely combined:
