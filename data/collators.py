@@ -10,8 +10,8 @@ infers ``num_cameras`` directly from each sample and needs no config.
 Action-style branch
 -------------------
 ``CollatorForActionConsumerDataset`` is used together with
-``datasets.dataset_hdf5.VLAConsumerDataset`` to assemble HDF5 action
-batches in the format expected by the PI0 model.
+``data.ds_train.robot.dataset_hdf5_action.VLAConsumerDataset`` to assemble
+HDF5 action batches in the format expected by the PI0 model.
 """
 from typing import Any, Dict, Sequence
 
@@ -103,7 +103,7 @@ class CollatorForDetectionDataset:
 
 class CollatorForActionConsumerDataset:
     """Collate examples for HDF5 VLA action training (paired with
-    ``datasets.dataset_hdf5.VLAConsumerDataset``).
+    ``data.ds_train.robot.dataset_hdf5_action.VLAConsumerDataset``).
     """
 
     def __init__(self, config: Any) -> None:

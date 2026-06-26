@@ -1,6 +1,6 @@
 from posevla.modeling_posevla import PoseVLAPolicy, PoseVLAConfig
 from data.collators import CollatorForDetectionDataset
-from data.ds_train.dataset_omni3d import Omni3DConsumerDataset
+from data.ds_train.detection.dataset_omni3d import Omni3DConsumerDataset
 import hydra
 from omegaconf import DictConfig
 from posevla.modeling_posevla import bin_tokenizer

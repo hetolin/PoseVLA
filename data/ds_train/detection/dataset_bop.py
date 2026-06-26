@@ -34,7 +34,7 @@ import shutil
 # Keeping a single source of truth avoids subtle drift between the four
 # detection datasets (omni6d / omni3d / bop / clutter).
 # ---------------------------------------------------------------------------
-from data.ds_train.dataset_omni6d import (  # noqa: E402  -- intentional re-export
+from data.ds_train.detection.dataset_omni6d import (  # noqa: E402  -- intentional re-export
     _intrinsics_to_matrix,
     _generate_coord_grid,
     _depth_to_pcl,

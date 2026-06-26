@@ -33,7 +33,7 @@ import shutil
 # GraspClutter6D API 导入（用于加载抓取数据）
 GRASPCLUTTER6D_AVAILABLE = True
 GRASP_HEIGHT = 0.02
-from data.ds_train.graspclutter6dAPI import GraspGroup, generate_views, transform_points, batch_viewpoint_params_to_matrix
+from data.ds_train.detection.graspclutter6dAPI import GraspGroup, generate_views, transform_points, batch_viewpoint_params_to_matrix
 
 
 def remap_pose(trans, rot_matrix):
@@ -71,7 +71,7 @@ def remap_pose(trans, rot_matrix):
 # Keeping a single source of truth avoids subtle drift between the four
 # detection datasets (omni6d / omni3d / bop / clutter).
 # ---------------------------------------------------------------------------
-from data.ds_train.dataset_omni6d import (  # noqa: E402  -- intentional re-export
+from data.ds_train.detection.dataset_omni6d import (  # noqa: E402  -- intentional re-export
     _intrinsics_to_matrix,
     _generate_coord_grid,
     _depth_to_pcl,

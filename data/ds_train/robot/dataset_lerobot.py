@@ -5,7 +5,7 @@ import torch
 from data.ds_raw.interndata_a1 import load_interndata_a1
 from data.ds_raw.interndata_a1 import REWARD, ACTION, OBS_PREFIX, FEATURE_MAPPING, IMAGE_MAPPING
 from utils.mapping_token import decode_text_to_scene_with_tokenizer, BinTokenizer, decode_text_to_scene
-from data.ds_train.dataset_agibot import DataCollatorForAgibotConsumerDataset
+from data.ds_train.robot.dataset_agibot import DataCollatorForAgibotConsumerDataset
 from utils.mapping_token import text_to_class_attr_dict_tokenizer, BinTokenizer, text_to_class_attr_dict
 from utils.vis import visualize_2d_3d_all, visualize_traj, visualize_views
 from torch.utils.data import ConcatDataset

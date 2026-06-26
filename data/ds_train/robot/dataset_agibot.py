@@ -18,7 +18,7 @@ from torch.utils.data import ConcatDataset
 from hydra.utils import instantiate
 from utils.mapping_token import BinTokenizer
 import cv2
-from data.ds_train.dataset_omni6d import _build_sparse_depth, _generate_rays
+from data.ds_train.detection.dataset_omni6d import _build_sparse_depth, _generate_rays
 from utils.vis import visualize_2d_3d_all, visualize_traj, visualize_views
 from utils.mapping_token import decode_text_to_scene, encode_scene_to_text
 from utils.mapping_token import decode_text_to_scene_with_tokenizer, encode_scene_to_text_with_tokenizer, BinTokenizer, broadcast_class_names, encode_scene_to_text_with_tokenizer_ablation

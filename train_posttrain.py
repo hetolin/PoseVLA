@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from posevla.modeling_posevla import PoseVLAConfig, PoseVLAPolicy
-from data.ds_train.dataset_hdf5 import VLAConsumerDataset, make_dataset
+from data.ds_train.robot.dataset_hdf5_action import VLAConsumerDataset, make_dataset
 from data.collators import CollatorForActionConsumerDataset as DataCollatorForPI0ConsumerDataset
 import torch
 import wandb

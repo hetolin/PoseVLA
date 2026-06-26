@@ -70,10 +70,10 @@ def _build_vlm_3d(cfg, bin_tokenizer):
     """Build VLM dataloaders for the 3D detection / pose branch."""
     # Local imports keep the module light when this branch is not used.
     from data.collators import CollatorForDetectionDataset
-    from data.ds_train.dataset_bop import BopConsumerDataset
-    from data.ds_train.dataset_clutter import BopClutterConsumerDataset
-    from data.ds_train.dataset_omni3d import Omni3DConsumerDataset
-    from data.ds_train.dataset_omni6d import Omni6dConsumerDataset
+    from data.ds_train.detection.dataset_bop import BopConsumerDataset
+    from data.ds_train.detection.dataset_clutter import BopClutterConsumerDataset
+    from data.ds_train.detection.dataset_omni3d import Omni3DConsumerDataset
+    from data.ds_train.detection.dataset_omni6d import Omni6dConsumerDataset
 
     omni6d_dataset = Omni6dConsumerDataset(config=cfg, tokenizer=bin_tokenizer)
     omni3d_dataset = Omni3DConsumerDataset(
@@ -135,8 +135,8 @@ def _build_vlm_3d(cfg, bin_tokenizer):
 def _build_vlm_robot(cfg, posevla_config, bin_tokenizer):
     """Build VLM dataloaders for the agibot + interndata-a1 branch."""
     from data.ds_raw.interndata_a1 import load_interndata_a1
-    from data.ds_train.dataset_lerobot import make_dataset
-    from data.ds_train.dataset_agibot import AgibotConsumerDataset, DataCollatorForAgibotConsumerDataset
+    from data.ds_train.robot.dataset_lerobot import make_dataset
+    from data.ds_train.robot.dataset_agibot import AgibotConsumerDataset, DataCollatorForAgibotConsumerDataset
 
     agibot_data = AgibotConsumerDataset(
         config=cfg,
@@ -194,7 +194,7 @@ def build_action_dataloader(cfg, posevla_config):
     """
     if cfg.dataset.type == "hdf5":
         from data.collators import CollatorForActionConsumerDataset
-        from data.ds_train.dataset_hdf5 import VLAConsumerDataset
+        from data.ds_train.robot.dataset_hdf5_action import VLAConsumerDataset
 
         train_dataset = VLAConsumerDataset(config=cfg)
         data_collator = CollatorForActionConsumerDataset(config=cfg)
@@ -202,7 +202,7 @@ def build_action_dataloader(cfg, posevla_config):
             cfg.dataloader, dataset=train_dataset, collate_fn=data_collator
         )
     elif cfg.dataset.type == "lerobot":
-        from data.ds_train.dataset_hdf5 import make_dataset
+        from data.ds_train.robot.dataset_hdf5_action import make_dataset
 
         train_dataset = make_dataset(posevla_config, cfg)
         train_dataloader = hydra.utils.instantiate(cfg.dataloader, dataset=train_dataset)

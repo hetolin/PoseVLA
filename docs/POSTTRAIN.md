@@ -5,7 +5,7 @@ This document covers **post-training / downstream fine-tuning** of a pre-trained
 - entry script: [`train_posttrain.py`](../train_posttrain.py)
 - main config: [`config/base_posttrain.yaml`](../config/base_posttrain.yaml)
 - dataset config: [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml)
-- dataloader / smoke test: [`data/ds_train/dataset_hdf5.py`](../data/ds_train/dataset_hdf5.py)
+- dataloader / smoke test: [`data/ds_train/robot/dataset_hdf5_action.py`](../data/ds_train/robot/dataset_hdf5_action.py)
 - multi-GPU launch: [`scripts/launch/posttrain.sh`](../scripts/launch/posttrain.sh)
 - data conversion: [`docs/ROBOTWIN_DATA.md`](ROBOTWIN_DATA.md)
 - simulation evaluation: [`robotwin/PoseVLA/README.md`](../robotwin/PoseVLA/README.md)
@@ -78,7 +78,7 @@ Then verify [`config/dataset/robotwin.yaml`](../config/dataset/robotwin.yaml):
 Before launching training, run the dataset visualization smoke test:
 
 ```bash
-python data/ds_train/dataset_hdf5.py
+python data/ds_train/robot/dataset_hdf5_action.py
 ```
 
 This writes:

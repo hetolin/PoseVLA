@@ -66,7 +66,7 @@ Distribution plots are saved to `global_distribution_plots/`.
 ## 3. Smoke Test
 
 ```bash
-python data/ds_train/dataset_hdf5.py
+python data/ds_train/robot/dataset_hdf5_action.py
 ```
 
 Check `all_images.png` and `all_joints.png`, then launch:

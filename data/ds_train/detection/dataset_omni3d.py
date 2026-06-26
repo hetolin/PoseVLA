@@ -26,12 +26,12 @@ from utils.mapping_token import text_to_class_attr_dict_tokenizer, map_3d_label_
 from typing import List
 import json
 # Import crop helpers from the sibling Omni6D dataset module.
-# NOTE: use the absolute package path (`data.ds_train.dataset_omni6d`)
+# NOTE: use the absolute package path (`data.ds_train.detection.dataset_omni6d`)
 # rather than the bare name `dataset_omni6d`, because Hydra changes the
 # working directory at runtime and bare-name imports would fail. Any
 # ImportError here is fatal (the dataset cannot operate without these
 # helpers), so we deliberately do NOT swallow the exception.
-from data.ds_train.dataset_omni6d import (
+from data.ds_train.detection.dataset_omni6d import (
     _crop_resize_with_pad,
     _resize_with_pad,
     _generate_rays,
