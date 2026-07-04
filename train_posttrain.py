@@ -120,11 +120,26 @@ def train(cfg: DictConfig) -> None:
                               )
     if not cfg.debug:
 
+        if cfg.resume_ckpt:
+            # Resume reuses the checkpoint's saved config (model/dataset must match the
+            # weights), but keeps the optimizer/scheduler hyper-params from *this* launch
+            # so the LR can be changed on resume. Done on all ranks to keep configs in sync.
+            resume_overrides = {
+                "resume_ckpt": cfg.resume_ckpt,
+                "training": {
+                    "optimizer_lr": cfg.training.optimizer_lr,
+                    "scheduler_warmup_steps": cfg.training.scheduler_warmup_steps,
+                    "scheduler_decay_steps": cfg.training.scheduler_decay_steps,
+                    "scheduler_decay_lr": cfg.training.scheduler_decay_lr,
+                    "max_training_steps": cfg.training.max_training_steps,
+                },
+            }
+            cfg_prev = OmegaConf.load(Path(cfg.resume_ckpt).parent / "base.yaml")
+            cfg = OmegaConf.merge(cfg_prev, resume_overrides)
+            cfg.ckpt_save_dir = cfg.resume_ckpt
+
         if accelerator.is_main_process:
             if cfg.resume_ckpt:
-                cfg_prev = OmegaConf.load(Path(cfg.resume_ckpt).parent / "base.yaml")
-                cfg = OmegaConf.merge(cfg_prev, {"resume_ckpt": cfg.resume_ckpt})
-                cfg.ckpt_save_dir = cfg.resume_ckpt
                 cfg = initialize_wandb(cfg) # load wandb.run.id
             else:
                 cfg = initialize_wandb(cfg)
@@ -252,8 +267,15 @@ def train(cfg: DictConfig) -> None:
         raise NotImplementedError("Only support `vlm` and `action` training now.")
 
     if cfg.resume_ckpt:
-        accelerator.print(f"Resuming optimizer and scheduler from checkpoint {cfg.resume_ckpt}")
-        accelerator.load_state(os.path.join(cfg.resume_ckpt, "state", "training_state.pth"))
+        state_path = os.path.join(cfg.resume_ckpt, "state", "training_state.pth")
+        if os.path.exists(state_path):
+            accelerator.print(f"Resuming optimizer and scheduler from checkpoint {cfg.resume_ckpt}")
+            accelerator.load_state(state_path)
+        else:
+            accelerator.print(
+                f"No training state found at {state_path}; "
+                f"resuming model weights only with a fresh optimizer/scheduler (LR from current launch)."
+            )
         accelerator.wait_for_everyone()
 
     total_batch_size = (

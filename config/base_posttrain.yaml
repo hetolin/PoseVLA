@@ -5,9 +5,9 @@ wandb_project: "PoseVLA"                                  # Name of W&B project 
 
 branch: pi0
 
-exp_name: "align_bs${training.batch_size}_${training.grad_accumulation_steps}_robotwin" 
+exp_name: "align_bs${training.batch_size}_${training.grad_accumulation_steps}_robotwin_2" 
 ckpt_save_dir: "${dev_dir}/ckpt/${exp_name}"
-save_training_state: False # will use more disk storge
+save_training_state: True # will use more disk storge
 checkpoints_total_limit: 5
 
 resume_ckpt: null
@@ -33,7 +33,7 @@ training:
   optimizer_weight_decay: 1e-10
 
   scheduler_warmup_steps: 1_000
-  scheduler_decay_steps: 80_000 
+  scheduler_decay_steps: 120_000 
   scheduler_decay_lr: 2.5e-6
 
   grad_accumulation_steps: 1                                # Gradient accumulation steps

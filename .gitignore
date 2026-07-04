@@ -25,7 +25,7 @@ MANIFEST
 .python-version
 Pipfile.lock
 poetry.lock
-
+ckpt_robotwin/
 # =========================================================
 # Virtual envs
 # =========================================================
@@ -104,6 +104,7 @@ wandb/
 # Checkpoints / Models / Pretrained weights
 # =========================================================
 ckpt/
+ckpt_robotwin/
 ckpts/
 checkpoints/
 runs/

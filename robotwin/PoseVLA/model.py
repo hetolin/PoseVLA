@@ -19,12 +19,13 @@ def reset_model(model):
 class PoseVLAPolicyWrapper:
     """RoboTwin wrapper for a PoseVLA post-trained checkpoint."""
 
-    def __init__(self, ckpt_path, action_type="eep"):
+    def __init__(self, ckpt_path, action_type="eep", action_chunk_steps=None):
         from posevla.modeling_posevla import PoseVLAPolicy
 
         self.weight_dtype = torch.bfloat16
         self.action_type = action_type
         self.action_dim = 16 if action_type == "eep" else 14
+        self.action_chunk_steps = int(action_chunk_steps) if action_chunk_steps else None
 
         self.policy = PoseVLAPolicy.from_pretrained(
             ckpt_path,
@@ -43,7 +44,8 @@ class PoseVLAPolicyWrapper:
         print(
             f"[PoseVLA] Loaded checkpoint: {ckpt_path}, "
             f"action_type={self.action_type}, action_dim={self.action_dim}, "
-            f"n_action_steps={self.policy.config.n_action_steps}"
+            f"n_action_steps={self.policy.config.n_action_steps}, "
+            f"action_chunk_steps={self.action_chunk_steps or 'all'}"
         )
 
     def reset(self):
@@ -97,6 +99,8 @@ class PoseVLAPolicyWrapper:
 
         self.policy.reset()
         full_actions_chunk = self.select_action(batch).squeeze(0)
+        if self.action_chunk_steps is not None:
+            full_actions_chunk = full_actions_chunk[: self.action_chunk_steps]
 
         for action in full_actions_chunk[1:]:
             self.action_cache.append(action)
@@ -118,4 +122,5 @@ def get_model(usr_args):
     return PoseVLAPolicyWrapper(
         ckpt_path=ckpt_path,
         action_type=usr_args.get("action_type", "eep"),
+        action_chunk_steps=usr_args.get("action_chunk_steps"),
     )
