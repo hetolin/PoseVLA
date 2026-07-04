@@ -8,7 +8,7 @@ A unified framework that co-trains a **Vision-Language-Action (VLA)** policy wit
 
 [![arXiv](https://img.shields.io/badge/arXiv-2602.19710-b31b1b.svg)](https://arxiv.org/abs/2602.19710)
 [![Project Page](https://img.shields.io/badge/Project_Page-PoseVLA-2ea44f.svg)](https://hetolin.github.io/PoseVLA/)
-[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-f7c843)](https://huggingface.co/hetolin/PoseVLA)
+[![ModelScope Model](https://img.shields.io/badge/ModelScope-Model-624aff)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files)
 
 [\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](docs/PRETRAIN.md) [\[🤖 Post-train (Robotwin)\]](docs/POSTTRAIN.md) [\[🕹 RoboTwin Eval\]](robotwin/PoseVLA/README.md) [\[🐛 Troubleshooting\]](docs/PRETRAIN.md#-troubleshooting)
 
