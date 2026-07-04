@@ -158,7 +158,7 @@ The tokenizer is already bundled under [google/paligemma-3b-pt-224/](google/pali
 
 ### 4. Environment variables
 
-See [scripts/launch/start_h20.sh](scripts/launch/start_h20.sh). At minimum:
+Set the project parent directory before launching Hydra-based training scripts. At minimum:
 
 ```bash
 export ROOT="/your/home"
@@ -185,7 +185,7 @@ W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your
 - [x] Release the 3D evaluation entry (`eval_detection.py`) with mAP / PR-curve aggregation.
 - [x] Release support for both **π0** and **π0.5** Action Experts in a single codebase (switchable via `training.pi05`).
 - [x] Release the Robotwin post-training entry (`train_posttrain.py`) and RoboTwin deployment scripts.
-- [ ] Release pretrained PoseVLA checkpoints.
+- [x] Release pretrained PoseVLA checkpoints.
 
 ## 🙋 FAQs
 

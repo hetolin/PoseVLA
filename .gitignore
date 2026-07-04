@@ -126,6 +126,8 @@ pretrained/
 *.onnx
 *.tflite
 *.pkl
+!robotwin/PoseVLA/norm_stats/
+!robotwin/PoseVLA/norm_stats/qpos_mean_std_online.pkl
 *.npy
 *.npz
 *.h5

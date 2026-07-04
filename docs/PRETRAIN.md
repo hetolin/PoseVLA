@@ -19,10 +19,6 @@ PoseVLA is designed to be pre-trained on a mixture of **3D understanding data** 
 ### Single-node multi-GPU (local debugging)
 
 ```bash
-# Bootstrap the environment first
-bash scripts/launch/start_h20.sh
-
-# Then launch with accelerate
 accelerate launch \
   --multi_gpu --num_machines 1 --num_processes 8 \
   --mixed_precision=bf16 \

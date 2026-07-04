@@ -19,7 +19,7 @@ For **pre-training** the PoseVLA backbone, see [PRETRAIN.md](PRETRAIN.md).
 ## 1. Set the project root used by Hydra
 
 ```bash
-export DEV_PATH=/home/tione/notebook/home/henryhyyu/RoboTwin/policy
+export DEV_PATH=/path/to/parent/of/PoseVLA
 ```
 
 `base_posttrain.yaml` resolves `dev_dir: ${oc.env:DEV_PATH}/PoseVLA` and writes checkpoints to `${dev_dir}/ckpt/${exp_name}`.

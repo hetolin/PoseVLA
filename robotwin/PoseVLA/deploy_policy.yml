@@ -8,9 +8,9 @@ instruction_type: unseen
 policy_conda_env: 0
 checkpoint_id: 19999
 ckpt_dir_name: align_bs12_1_robotwin
-checkpoint_path:  # optional; if empty, use ckpt/<ckpt_dir_name>/<checkpoint_id>/model
+checkpoint_path: policy/PoseVLA/ckpt_robotwin/model  # released checkpoint; if empty, use ckpt/<ckpt_dir_name>/<checkpoint_id>/model
 action_type: eep
-norm_path: /home/pub_data/hanyangyu/Datasets/robotwin_processed_random/global_stats_output_eep/qpos_mean_std_online.pkl
+norm_path: policy/PoseVLA/robotwin/PoseVLA/norm_stats/qpos_mean_std_online.pkl
 left_arm_dim: 8
 right_arm_dim: 8
 port: 8081

@@ -52,10 +52,10 @@ If your RoboTwin environment cannot install all training dependencies cleanly, i
 
 ### Deploy PoseVLA Policy to RoboTwin
 
-Copy or symlink this folder into the RoboTwin policy directory:
+Copy or symlink the PoseVLA repository into the RoboTwin policy directory. The RoboTwin config imports `policy.PoseVLA.robotwin.PoseVLA`, so `RoboTwin/policy/PoseVLA` should point to the PoseVLA repository root, not only this deployment subfolder:
 
 ```bash
-ln -s /path/to/PoseVLA/robotwin/PoseVLA /path/to/RoboTwin/policy/PoseVLA
+ln -s /path/to/PoseVLA /path/to/RoboTwin/policy/PoseVLA
 ```
 
 The expected structure is:
@@ -64,12 +64,17 @@ The expected structure is:
 RoboTwin/
 ├── policy/
 │   ├── PoseVLA/
-│   │   ├── deploy_policy.py
-│   │   ├── deploy_policy.yml
-│   │   ├── eval_policy.py
-│   │   ├── model.py
-│   │   ├── run_auto_eval_posevla.sh
-│   │   └── README.md
+│   │   ├── posevla/
+│   │   ├── robotwin/
+│   │   │   └── PoseVLA/
+│   │   │       ├── deploy_policy.py
+│   │   │       ├── deploy_policy.yml
+│   │   │       ├── eval_policy.py
+│   │   │       ├── model.py
+│   │   │       ├── norm_stats/
+│   │   │       ├── run_auto_eval_posevla.sh
+│   │   │       └── README.md
+│   │   └── ... other PoseVLA files
 │   └── ... other policies
 ├── script/
 │   └── eval_policy.py
@@ -79,13 +84,13 @@ RoboTwin/
 Replace RoboTwin's default evaluation entry with the PoseVLA-compatible one:
 
 ```bash
-cp /path/to/RoboTwin/policy/PoseVLA/eval_policy.py /path/to/RoboTwin/script/eval_policy.py
+cp /path/to/RoboTwin/policy/PoseVLA/robotwin/PoseVLA/eval_policy.py /path/to/RoboTwin/script/eval_policy.py
 ```
 
 For parallel evaluation, copy `run_auto_eval_posevla.sh` to the RoboTwin root manually:
 
 ```bash
-cp /path/to/RoboTwin/policy/PoseVLA/run_auto_eval_posevla.sh /path/to/RoboTwin/run_auto_eval_posevla.sh
+cp /path/to/RoboTwin/policy/PoseVLA/robotwin/PoseVLA/run_auto_eval_posevla.sh /path/to/RoboTwin/run_auto_eval_posevla.sh
 chmod +x /path/to/RoboTwin/run_auto_eval_posevla.sh
 ```
 
@@ -97,7 +102,7 @@ The released RoboTwin checkpoint is available on ModelScope:
 https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files
 ```
 
-Download the checkpoint before running evaluation. The deployment code expects a local directory that contains `config.json` and `model.safetensors`; the recommended local layout is:
+Download the checkpoint before running evaluation. The deployment code expects a local model directory that contains `config.json` and `model.safetensors`; the recommended local layout is:
 
 ```text
 PoseVLA/
@@ -107,7 +112,7 @@ PoseVLA/
         └── model.safetensors
 ```
 
-You can download the two files from the ModelScope web page manually, or use the ModelScope CLI:
+You can download the files from the ModelScope web page manually, or use the ModelScope CLI:
 
 ```bash
 pip install modelscope
@@ -123,7 +128,7 @@ modelscope download hanyangyu1021/PoseVLA-robotwin \
 After downloading, set `checkpoint_path` in `deploy_policy.yml` to the local model directory:
 
 ```yaml
-checkpoint_path: /path/to/PoseVLA/ckpt_robotwin/model
+checkpoint_path: policy/PoseVLA/ckpt_robotwin/model
 ```
 
 The released checkpoint is already converted for the current PoseVLA codebase (`type: posevla`) and only includes inference files, so no training state or optimizer checkpoint is required.
@@ -145,7 +150,7 @@ These numbers are averaged over the full 50-task RoboTwin evaluation suite. Use 
 Edit `deploy_policy.yml`:
 
 ```yaml
-policy_name: policy.PoseVLA
+policy_name: policy.PoseVLA.robotwin.PoseVLA
 task_name: beat_block_hammer
 task_config: demo_randomized
 ckpt_setting: default
@@ -154,9 +159,9 @@ instruction_type: unseen
 policy_conda_env: 0
 checkpoint_id: 19999
 ckpt_dir_name: align_bs12_1_robotwin # saved ckpt path
-checkpoint_path: /path/to/PoseVLA/ckpt_robotwin/model # released checkpoint; if empty, use ckpt/<ckpt_dir_name>/<checkpoint_id>/model
+checkpoint_path: policy/PoseVLA/ckpt_robotwin/model # released checkpoint; if empty, use ckpt/<ckpt_dir_name>/<checkpoint_id>/model
 action_type: eep
-norm_path: /path/to/global_stats_output_eep/qpos_mean_std_online.pkl
+norm_path: policy/PoseVLA/robotwin/PoseVLA/norm_stats/qpos_mean_std_online.pkl
 left_arm_dim: 8
 right_arm_dim: 8
 port: 8081
@@ -164,13 +169,13 @@ port: 8081
 
 Important fields:
 
-- `policy_name`: must match the RoboTwin policy folder, usually `policy.PoseVLA`.
+- `policy_name`: must match the import path of this deployment package, usually `policy.PoseVLA.robotwin.PoseVLA`.
 - `task_name`: the RoboTwin task to evaluate.
 - `task_config`: RoboTwin task config, such as `demo_randomized` or `demo_clean`.
-- `checkpoint_path`: direct path to a saved PoseVLA model directory. For the released RoboTwin checkpoint, use `/path/to/PoseVLA/ckpt_robotwin/model`.
+- `checkpoint_path`: direct path to a saved PoseVLA model directory. For the released RoboTwin checkpoint, use `policy/PoseVLA/ckpt_robotwin/model` when running from the RoboTwin root.
 - `ckpt_dir_name` and `checkpoint_id`: fallback checkpoint lookup when `checkpoint_path` is empty.
 - `action_type`: use `eep` for the current Robotwin PoseVLA setup.
-- `norm_path`: statistics file generated by `scripts/stats/norm_robotwin.py`.
+- `norm_path`: statistics file generated by `scripts/stats/norm_robotwin.py`. For the released RoboTwin checkpoint, use the bundled stats at `policy/PoseVLA/robotwin/PoseVLA/norm_stats/qpos_mean_std_online.pkl`.
 - `left_arm_dim` and `right_arm_dim`: use `8` and `8` for 16-dim EEP actions.
 
 If `checkpoint_path` is empty, `model.py` falls back to:
@@ -193,7 +198,7 @@ python script/eval_policy.py --config policy/PoseVLA/robotwin/PoseVLA/deploy_pol
 
 The exact command may differ depending on the RoboTwin version and your local evaluation script. The key requirement is that RoboTwin loads `policy/PoseVLA/deploy_policy.yml` and imports `policy/PoseVLA/deploy_policy.py`.
 
-For parallel evaluation, edit `run_auto_eval_posevla.sh` first: set `GPU_IDS`, `CHECKPOINT_ID`, `CKPT_DIR_NAME`, `TASK_CONFIG`, `SEED`, and the `TASKS` list as needed. Then run it from the RoboTwin root:
+For parallel evaluation, edit `run_auto_eval_posevla.sh` first: set `GPU_IDS`, `TASK_CONFIG`, `SEED`, and the `TASKS` list as needed. The checkpoint path is read from `deploy_policy.yml`. Then run it from the RoboTwin root:
 
 ```bash
 cd /path/to/RoboTwin
@@ -222,6 +227,7 @@ Open `evaluation_summary.txt` to check success, failure, total task count, and s
 
 - `deploy_policy.py`: converts RoboTwin observations into PoseVLA batch format, normalizes EEP/qpos state, denormalizes predicted actions, and sends actions back to RoboTwin.
 - `model.py`: loads the PoseVLA checkpoint and runs chunked inference. For EEP, it keeps the 16-dim action output used by Robotwin.
+- `norm_stats/`: released RoboTwin EEP normalization statistics used by `deploy_policy.py`.
 - `deploy_policy.yml`: RoboTwin-side policy config.
 - `eval_policy.py`: PoseVLA-compatible RoboTwin evaluation entry. Copy it to `RoboTwin/script/eval_policy.py`.
 - `run_auto_eval_posevla.sh`: parallel RoboTwin evaluation launcher. Copy it to the RoboTwin root before running.

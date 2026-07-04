@@ -167,7 +167,7 @@ def main(usr_args):
 
     st_seed = 100000 * (1 + seed) #1 + seed #
     suc_nums = []
-    test_num = 50  
+    test_num = int(usr_args.get("test_num", 50))
 
     if ckpt_dir_name is not None:
         usr_args["ckpt_dir_name"] = ckpt_dir_name
