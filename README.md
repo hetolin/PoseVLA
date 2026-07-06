@@ -160,7 +160,7 @@ Create a `pretrain/` directory under the project root and place any of the follo
 ```
 pretrain/
 ├── paligemma-3b-pt-224/   # Vanilla PaliGemma VLM
-├── lerobot_pi0/           # Finetuned π0
+├── lerobot_pi0/           # π0
 └── pi05_base/             # π0.5
 ```
 

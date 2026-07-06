@@ -7,7 +7,7 @@ import re
 import regex
 
 class BinTokenizer:
-    def __init__(self, file='./statistic/all_bins.pkl'):
+    def __init__(self, file='./bin_stats/nonuniform_bins.pkl'):
         # 1. 默认值
         self.EXTRA_LOC_TOKENS = self.gen_tokens("loc", 1024)
         self.EXTRA_SEG_TOKENS = self.gen_tokens("seg", 128)

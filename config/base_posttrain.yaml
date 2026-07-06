@@ -98,7 +98,7 @@ co_training:
   action_training: True
 
 data_3d: False
-statistics_path_6d_dataset: './statistic_all_datasets/all_bins.pkl'
+statistics_path_6d_dataset: './bin_stats/nonuniform_bins.pkl'
 max_norm_6d_dataset: False #是否将pose归一化到0-1
 uniform_mapping_6d_dataset: False #是否将pose均匀mapping到0-1
 depth_full_prob: 0.5
