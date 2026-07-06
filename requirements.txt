@@ -28,6 +28,7 @@ websockets
 draccus==0.10.0
 pillow==11.0.0
 cutoop
+OpenEXR
 #git+https://github.com/thodan/bop_toolkit.git
 #git+https://github.com/huggingface/lerobot@638d411cd3acf32c28d8c2120f3c41bda8bb15d4
 #git+https://github.com/dlwh/draccus@e48252662a78a847f534766b506c2ac83c57c627

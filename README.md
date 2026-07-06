@@ -131,16 +131,26 @@ conda activate vla
 pip install torch==2.7.0 torchvision==0.22.0 torchaudio==2.7.0 \
     --index-url https://download.pytorch.org/whl/cu126
 
-# NOTE: keep the `lerobot` line commented out in requirements.txt — we install it manually below.
+# Install lerobot (pinned commit, compatible with PoseVLA)
+# Fix: rename `pyav` -> `av` (package renamed on PyPI)
+# Fix: remove `rerun-sdk` (requires numpy>=2, conflicts with imgaug)
+git clone https://github.com/huggingface/lerobot.git third_party/lerobot \
+  && cd third_party/lerobot \
+  && git checkout 638d411cd3acf32c28d8c2120f3c41bda8bb15d4 \
+  && sed -i 's/pyav/av/' pyproject.toml \
+  && sed -i '/rerun-sdk/d' pyproject.toml \
+  && pip install -e . \
+  && cd ../..
+
+# (Optional) Install bop_toolkit (used for BOP dataset, for 3D pretraining only)
+git clone https://github.com/thodan/bop_toolkit.git third_party/bop_toolkit \
+  && cd third_party/bop_toolkit \
+  && pip install -e . \
+  && cd ../..
+
+# NOTE: keep the `lerobot` line commented out in requirements.txt — we install it manually.
 pip install -r requirements.txt
 
-# Install lerobot at the pinned commit.
-# NOTE: at that commit lerobot still declares the old `pyav` package name,
-# which is now renamed to `av` on PyPI. We install `av` first, then install
-# lerobot with `--no-deps` to bypass the stale `pyav` requirement.
-pip install av
-pip install --no-deps \
-  "lerobot @ git+https://github.com/huggingface/lerobot@638d411cd3acf32c28d8c2120f3c41bda8bb15d4"
 ```
 
 ### 3. Pretrained weights
