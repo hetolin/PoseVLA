@@ -135,7 +135,7 @@ The released checkpoint is already converted for the current PoseVLA codebase (`
 
 ### Checkpoint Details
 
-The released RoboTwin checkpoint is stronger than the checkpoint reported in the paper. The paper result uses batch size `32` and `80k` training steps, while this released checkpoint uses global batch size `12 × 16` and is selected from the roughly `100k` training step range. On the 50 RoboTwin tasks, the average success rates are:
+The released RoboTwin checkpoint is stronger than the checkpoint reported in the paper. The paper result uses batch size `32` and `80k` training steps, while this released checkpoint uses global batch size `12 × 24` and is selected from the roughly `100k` training step range. On the 50 RoboTwin tasks, the average success rates are:
 
 ```text
                     demo_clean    demo_randomized
