@@ -61,17 +61,27 @@ PoseVLA/
 ├── posevla/                    # PoseVLA model implementation (π0 / π0.5 based)
 │   ├── configuration_posevla.py    # PoseVLAConfig
 │   ├── modeling_posevla.py         # PoseVLAPolicy (PaliGemma + Action Expert + Flow Matching)
-│   ├── paligemma_with_expert.py
-│   ├── patch_embed.py
-│   ├── convert_jax_model_to_pytorch.py
-│   └── _lerobot_compat.py
+│   ├── paligemma_with_expert.py    # PaliGemma + Expert dual-stream architecture
+│   ├── patch_embed.py              # Vision patch embedding (SigLIP + prior fusion)
+│   ├── convert_jax_model_to_pytorch.py  # JAX → PyTorch weight converter
+│   └── _lerobot_compat.py         # LeRobot compatibility layer
 │
 ├── data/
 │   ├── factory.py              # Unified VLM / Action DataLoader factory
 │   ├── collators.py            # DataCollators (action / detection)
-│   ├── ds_raw/                 # Raw dataset readers (agibot / droid / rdt / umi / xtrainer / interndata_a1 / robotwin …)
-│   └── ds_train/               # Training Datasets (hdf5 / lerobot / bop / clutter / omni3d / omni6d / agibot)
-│       └── graspclutter6dAPI.py    # GraspClutter6D dataset API (used by dataset_clutter)
+│   ├── ds_raw/                 # Raw dataset readers
+│   │   ├── agibot.py / interndata_a1.py / robotwin.py
+│   │   ├── droid.py / rdt.py / umi.py / xtrainer.py
+│   │   └── mix.py             # Multi-source mixed dataset reader
+│   └── ds_train/               # Training Datasets
+│       ├── detection/          # 3D detection datasets (VLM)
+│       │   ├── dataset_bop.py / dataset_omni3d.py / dataset_omni6d.py
+│       │   ├── dataset_clutter.py
+│       │   └── graspclutter6dAPI.py
+│       └── robot/              # Robot action datasets (VLA)
+│           ├── dataset_hdf5_action.py   # HDF5 action dataset
+│           ├── dataset_lerobot.py       # LeRobot format dataset
+│           └── dataset_agibot.py        # Agibot dataset
 │
 ├── utils/                      # Shared utilities
 │   ├── process_data_all.py     # Robotwin raw → HDF5 conversion
@@ -83,7 +93,7 @@ PoseVLA/
 │
 ├── config/                     # Hydra configs
 │   ├── base.yaml               # Pre-train main config
-│   ├── base_posttrain.yaml      # Post-train (Robotwin) main config
+│   ├── base_posttrain.yaml     # Post-train (Robotwin) main config
 │   ├── zero0.json / zero2.json / zero3_offload.json   # DeepSpeed configs
 │   ├── dataset/                # Action training dataset configs (hdf5, lerobot, robotwin)
 │   ├── dataset_bop/            # BOP series
@@ -107,6 +117,9 @@ PoseVLA/
 │       ├── compute_dataset_stat_hdf5_rel_ee.py
 │       ├── norm_robotwin.py    # Robotwin EEP / qpos normalization stats
 │       └── normalize.py
+│
+├── bin_stats/                  # Non-uniform tokenizer bin boundaries
+│   └── nonuniform_bins.pkl     # Pre-computed quantization bins for 3D tokenization
 │
 ├── docs/                       # Stage-level documents
 │   ├── PRETRAIN.md             # Pre-train guide
