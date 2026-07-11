@@ -50,7 +50,8 @@ The project supports three orthogonal training modes that can be freely combined
 - **Action training** — learn robot actions via **Flow Matching** on HDF5 / LeRobot-format data (Agibot, InternData-A1, Robotwin, …).
 - **Co-Training** — VLM and Action data are interleaved within the same optimization step.
 
-### 📁 Project Structure
+<details>
+<summary><b>📁 Project Structure</b> (click to expand)</summary>
 
 ```
 PoseVLA/
@@ -129,6 +130,8 @@ PoseVLA/
 ├── robotwin/PoseVLA/           # RoboTwin simulation deploy + eval
 └── google/paligemma-3b-pt-224/ # Local PaliGemma tokenizer / config
 ```
+
+</details>
 
 ---
 
