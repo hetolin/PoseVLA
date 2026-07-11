@@ -2,8 +2,6 @@
 
 # PoseVLA: Universal Pose Pretraining for Generalizable Vision-Language-Action Policies (RSS2026)
 
-A unified framework that co-trains a **Vision-Language-Action (VLA)** policy with **3D object detection / 6D pose estimation**, built on top of **PaliGemma**. 🤗
-
 [//]: # (Purely HuggingFace + Accelerate + DeepSpeed + Hydra based — concise code, multi-node ready, easy to extend.)
 
 [![arXiv](https://img.shields.io/badge/arXiv-2602.19710-b31b1b.svg)](https://arxiv.org/abs/2602.19710)
@@ -12,12 +10,14 @@ A unified framework that co-trains a **Vision-Language-Action (VLA)** policy wit
 
 [\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](docs/PRETRAIN.md) [\[🤖 Post-train (Robotwin)\]](docs/POSTTRAIN.md) [\[🕹 RoboTwin Eval\]](robotwin/PoseVLA/README.md) [\[🐛 Troubleshooting\]](docs/PRETRAIN.md#-troubleshooting)
 
+<img src="assets/teaser.png" width="100%" />
+
 </div>
 
 ---
 
 ## News 🚀🚀🚀
-- `2026/06`: Initial release of **PoseVLA**: supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / Droid / RDT / UMI / xtrainer / InternData-A1 for robot actions.
+- `2026/06`: Initial release of **PoseVLA**: supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / InternData-A1 for robot actions.
 
 ---
 
@@ -40,15 +40,15 @@ PoseVLA is split into two training stages, each with its own document:
 | Stage | Entry script | Config | Doc |
 | --- | --- | --- | --- |
 | **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
-| **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
 | **Robotwin data conversion** (raw → HDF5 + normalization) | [utils/process_data_all.py](utils/process_data_all.py) | [config/dataset/robotwin.yaml](config/dataset/robotwin.yaml) | [docs/ROBOTWIN_DATA.md](docs/ROBOTWIN_DATA.md) |
+| **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
 The project supports three orthogonal training modes that can be freely combined:
 
-- **VLM training** — learn 3D object detection / 6D pose / scene description via **Next-Token Prediction (NTP)** on Omni3D, Omni6D, BOP, GraspClutter6D, …
-- **Action training** — learn robot actions via **Flow Matching** on HDF5 / LeRobot-format data (Agibot, Droid, RDT, UMI, xtrainer, InternData-A1, Robotwin, …).
-- **Co-Training** — VLM and Action data are interleaved within the same optimization step, with optional **Knowledge Insulation** to decouple their gradients.
+- **VLM training** — learn 3D object detection via **Next-Token Prediction (NTP)** on Omni3D, Omni6D, BOP, GraspClutter6D, …
+- **Action training** — learn robot actions via **Flow Matching** on HDF5 / LeRobot-format data (Agibot, InternData-A1, Robotwin, …).
+- **Co-Training** — VLM and Action data are interleaved within the same optimization step.
 
 ### 📁 Project Structure
 
