@@ -17,7 +17,19 @@ A unified framework that co-trains a **Vision-Language-Action (VLA)** policy wit
 ---
 
 ## News 🚀🚀🚀
-- `2026/06`: Initial release of **PoseVLA**: PaliGemma + π0 / π0.5 Action Expert, joint VLM + Action training with Knowledge Insulation, supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / Droid / RDT / UMI / xtrainer / InternData-A1 for robot actions.
+- `2026/06`: Initial release of **PoseVLA**: supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / Droid / RDT / UMI / xtrainer / InternData-A1 for robot actions.
+
+---
+
+## 🏆 Main Results on RoboTwin (50 tasks, Average %)
+
+| Method                | Easy | Hard |
+|:----------------------| :---: | :---: |
+| π0                    | 67.00 | 65.12 |
+| π0.5                  | 79.48 | 76.16 |
+| PaliGemma_expert      | 35.40 | 33.36 |
+| Pose-VLA (In Paper)   | 79.91 | 79.10 |
+| **PoseVLA (In Repo)** | **89.40** | **88.60** |
 
 ---
 
