@@ -201,9 +201,14 @@ Create a `pretrain/` directory under the project root and place any of the follo
 ```
 pretrain/
 ├── paligemma-3b-pt-224/   # Vanilla PaliGemma VLM
-├── lerobot_pi0/           # π0
-└── pi05_base/             # π0.5
+├── lerobot_pi0/           # π0 Action Expert
+└── pi05_base/             # π0.5 Action Expert
 ```
+
+Download links:
+- [PaliGemma-3B-pt-224](https://huggingface.co/google/paligemma-3b-pt-224) — Base VLM weights
+- [lerobot_pi0](https://huggingface.co/hetolin/lerobot_pi0) — π0 Action Expert weights
+- [pi05_base](https://huggingface.co/hetolin/pi05_base) — π0.5 Action Expert weights
 
 The tokenizer is already bundled under [google/paligemma-3b-pt-224/](google/paligemma-3b-pt-224/); the config points to it via `model.tokenizer_model_path`.
 
@@ -212,11 +217,7 @@ The tokenizer is already bundled under [google/paligemma-3b-pt-224/](google/pali
 Set the project parent directory before launching Hydra-based training scripts. At minimum:
 
 ```bash
-export ROOT="/your/home"
-export DEV_PATH="${ROOT}/robot_code"
-export PYTHONPATH="$PYTHONPATH:${DEV_PATH}"
-export HF_HOME=${ROOT}/.cache/huggingface
-export HF_LEROBOT_HOME=${HF_HOME}/lerobot
+export DEV_PATH="/path/to/parent/of/PoseVLA"
 export HYDRA_FULL_ERROR=1
 ```
 
@@ -285,3 +286,14 @@ PoseVLA is built with reference to the following projects:
 [BOP Toolkit](https://github.com/thodan/bop_toolkit),
 and [GraspClutter6D](https://github.com/SeungBack/GraspClutter6D).
 Thanks for their awesome work.
+
+## Citation
+
+```bibtex
+@article{lin2026posevla,
+  title={PoseVLA: Universal Pose Pretraining for Generalizable Vision-Language-Action Policies},
+  author={Lin, Haitao and Yu, Hanyang and Huang, Jingshun and Zhang, He and Ling, Yonggen and Tan, Ping and Xue, Xiangyang and Fu, Yanwei},
+  journal={arXiv preprint arXiv:2602.19710},
+  year={2026}
+}
+```
