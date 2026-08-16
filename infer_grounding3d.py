@@ -343,7 +343,15 @@ def main(cfg: DictConfig) -> None:
             # 同时保存原始深度值（16bit，单位mm）
             depth_mm = (depth * 1000).astype(np.uint16)
             cv2.imwrite("infer_depth_raw.png", depth_mm)
-            print(f"已保存: infer_rgb.png, infer_depth_raw.png")
+            # 保存 plasma 伪彩色深度图（用于可视化）
+            depth_vis = depth.copy()
+            depth_vis[depth_vis <= 0] = np.nan
+            d_min, d_max = np.nanmin(depth_vis), np.nanmax(depth_vis)
+            depth_norm = np.where(np.isnan(depth_vis), 0, (depth_vis - d_min) / (d_max - d_min + 1e-8) * 255).astype(np.uint8)
+            depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_PLASMA)
+            depth_color[depth <= 0] = 0  # 无效区域置黑
+            cv2.imwrite("infer_depth_vis.png", depth_color)
+            print(f"已保存: infer_rgb.png, infer_depth_raw.png, infer_depth_vis.png")
 
     else:
         # ===== 数据集推理模式 =====

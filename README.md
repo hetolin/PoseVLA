@@ -243,9 +243,15 @@ PoseVLA supports open-vocabulary 3D object grounding from RGB-D images. The infe
 python infer_grounding3d.py
 ```
 
+We provide example RGB-D images in [`assets/`](assets/) for a quick demo:
+
+| Input RGB |                     Input Depth                     | 3D Grounding Result |
+|:-:|:---------------------------------------------------:|:-:|
+| <img src="assets/robot_rgb.png" width="200"/> | <img src="assets/robot_depth_vis.png" width="200"/> | <img src="assets/robot_result.png" width="200"/> |
+
 Modify the following in the script:
 - `ckpt_path`: path to your pretrained checkpoint
-- `img_path` / `depth_path`: your RGB and depth image paths
+- `img_path` / `depth_path`: your RGB and depth image paths (default: `assets/robot_rgb.png`, `assets/robot_depth.png`)
 - `cam_K`: camera intrinsic matrix
 - `task_text`: open-vocabulary query (e.g., `"detect the bottle"`)
 
