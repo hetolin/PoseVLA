@@ -210,7 +210,7 @@ dataset:
 #
     # SUNRGBD 数据集（室内场景）
     sunrgbd:
-      pkl_path: "/home/tione/notebook/workspace/shanejhuang/DetAny3D/data/pkls/omni3d23daw_hjs/SUNRGBD_test.pkl"
+      pkl_path: "/home/hetolin/datasets/omni3d_dataset/pkl/omni3d23daw_hj/SUNRGBD_test.pkl"
       metric_scale: 10000.0     # PNG 深度图: 0.1mm -> m (10000 = 1/0.0001)
       max_distance: 5.0         # 最大深度 5 米（室内场景）
       min_distance: 0.01        # 最小深度 0.01 米
