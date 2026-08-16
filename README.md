@@ -6,7 +6,8 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2602.19710-b31b1b.svg)](https://arxiv.org/abs/2602.19710)
 [![Project Page](https://img.shields.io/badge/Project_Page-PoseVLA-2ea44f.svg)](https://hetolin.github.io/PoseVLA/)
-[![ModelScope Model](https://img.shields.io/badge/ModelScope-Model-624aff)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files)
+[![HF Stage-1](https://img.shields.io/badge/🤗_HuggingFace-Stage--1-ffd21e)](https://huggingface.co/hetolin/PoseVLA-stage1)
+[![ModelScope Robotwin](https://img.shields.io/badge/ModelScope-Robotwin-624aff)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files)
 
 [\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](docs/PRETRAIN.md) [\[🤖 Post-train (Robotwin)\]](docs/POSTTRAIN.md) [\[🕹 RoboTwin Eval\]](robotwin/PoseVLA/README.md) [\[🐛 Troubleshooting\]](docs/PRETRAIN.md#-troubleshooting)
 
@@ -17,6 +18,8 @@
 ---
 
 ## News 🚀🚀🚀
+- `2026/08`: Release **3D Grounding inference script** (`infer_grounding3d.py`) — supports real-world RGB-D input and HDF5 data for open-vocabulary 3D object grounding.
+- `2026/08`: Upload pretrained PoseVLA Stage-1 checkpoint to [Hugging Face](https://huggingface.co/hetolin/PoseVLA-stage1).
 - `2026/06`: Initial release of **PoseVLA**: supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / InternData-A1 for robot actions.
 
 ---
@@ -42,6 +45,7 @@ PoseVLA is split into two training stages, each with its own document:
 | **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
 | **Robotwin data conversion** (raw → HDF5 + normalization) | [utils/process_data_all.py](utils/process_data_all.py) | [config/dataset/robotwin.yaml](config/dataset/robotwin.yaml) | [docs/ROBOTWIN_DATA.md](docs/ROBOTWIN_DATA.md) |
 | **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
+| **3D Grounding Inference** (real-world RGB-D / HDF5) | [infer_grounding3d.py](infer_grounding3d.py) | [config/base.yaml](config/base.yaml) | [below](#-3d-grounding-inference) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
 The project supports three orthogonal training modes that can be freely combined:
@@ -58,6 +62,7 @@ PoseVLA/
 ├── train_pretrain.py           # Pre-train entry (hydra + accelerate + deepspeed)
 ├── train_posttrain.py          # Post-train / fine-tune entry (Robotwin etc.)
 ├── eval_detection.py           # Evaluation / mAP entry (Omni3D and other 3D tasks)
+├── infer_grounding3d.py        # 3D grounding inference (real-world RGB-D / HDF5)
 │
 ├── posevla/                    # PoseVLA model implementation (π0 / π0.5 based)
 │   ├── configuration_posevla.py    # PoseVLAConfig
@@ -146,6 +151,9 @@ cd PoseVLA
 
 ### 2. Conda env (installation from scratch)
 
+<details>
+<summary><b>Installation details</b> (click to expand)</summary>
+
 - Python 3.10.12
 - PyTorch 2.7.0 + CUDA 12.6 (TF32 / bf16 works best on Ampere / Hopper GPUs)
 
@@ -181,7 +189,12 @@ pip install -r requirements.txt
 
 ```
 
+</details>
+
 ### 3. Pretrained weights
+
+<details>
+<summary><b>Weights & environment setup</b> (click to expand)</summary>
 
 Create a `pretrain/` directory under the project root and place any of the following weights (pick what you need — multiple loading branches are available in [train_pretrain.py](train_pretrain.py)):
 
@@ -209,11 +222,39 @@ export HYDRA_FULL_ERROR=1
 
 W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your own.
 
+</details>
+
 ### 5. Next step
 
 - For **pre-training** the PoseVLA backbone on large-scale 3D + action data, follow [docs/PRETRAIN.md](docs/PRETRAIN.md).
 - For **post-training / fine-tuning** on RoboTwin (or your own robot), follow [docs/POSTTRAIN.md](docs/POSTTRAIN.md).
 - For **simulation evaluation** on RoboTwin, follow [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md).
+
+---
+
+## 🎯 3D Grounding Inference
+
+PoseVLA supports open-vocabulary 3D object grounding from RGB-D images. The inference script [`infer_grounding3d.py`](infer_grounding3d.py) provides two modes:
+
+### Real-world mode (RGB-D image input)
+
+```bash
+python infer_grounding3d.py
+```
+
+Modify the following in the script:
+- `ckpt_path`: path to your pretrained checkpoint
+- `img_path` / `depth_path`: your RGB and depth image paths
+- `cam_K`: camera intrinsic matrix
+- `task_text`: open-vocabulary query (e.g., `"detect the bottle"`)
+
+
+### Example output
+
+The script will:
+1. Print the predicted 3D scene text and decoded structured result
+2. Save `infer_rgb.png` and `infer_depth_raw.png` for inspection
+3. Visualize 2D/3D detection results and depth/ray maps
 
 ---
 
@@ -223,11 +264,15 @@ W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your
 - [x] Release the 3D evaluation entry (`eval_detection.py`) with mAP / PR-curve aggregation.
 - [x] Release support for both **π0** and **π0.5** Action Experts in a single codebase (switchable via `training.pi05`).
 - [x] Release the Robotwin post-training entry (`train_posttrain.py`) and RoboTwin deployment scripts.
-- [x] Release pretrained PoseVLA checkpoints.
+- [x] Release PoseVLA pretrain/posttrain checkpoints: [Stage-1 (HuggingFace)](https://huggingface.co/hetolin/PoseVLA-stage1) | [Robotwin (ModelScope)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files).
+- [x] Release 3D grounding inference script ([`infer_grounding3d.py`](infer_grounding3d.py)) for real-world RGB-D input.
 
-## 🙋 FAQs
+<details>
+<summary><b>🙋 FAQs</b></summary>
 
 If you encounter any issues, feel free to open an issue on GitHub or reach out through discussions. Feedback and contributions are very welcome! 🚀
+
+</details>
 
 ## Acknowledgement
 
