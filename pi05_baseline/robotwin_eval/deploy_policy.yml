@@ -1,0 +1,16 @@
+policy_name: policy.PoseVLA.pi05_baseline.robotwin_eval
+task_name: beat_block_hammer
+task_config: demo_clean
+ckpt_setting: pi05_robotwin_baseline
+seed: 0
+instruction_type: unseen
+policy_conda_env: 0
+
+checkpoint_path: policy/PoseVLA/ckpt_robotwin/pi05_baseline/model
+tokenizer_model_path: policy/PoseVLA/google/paligemma-3b-pt-224
+action_type: pi05
+norm_path: policy/PoseVLA/ckpt_robotwin/pi05_baseline/qpos_hybrid_stats.pkl
+
+left_arm_dim: 6
+right_arm_dim: 6
+port: 8081

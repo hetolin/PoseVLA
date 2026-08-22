@@ -1,0 +1,114 @@
+dev_dir: ${oc.env:DEV_PATH}/PoseVLA
+debug: False
+
+wandb_project: "pi05-robotwin-baseline"
+branch: pi0
+
+exp_name: "pi05_robotwin_bs${training.batch_size}_ga${training.grad_accumulation_steps}"
+ckpt_save_dir: "${dev_dir}/ckpt/${exp_name}"
+save_training_state: True
+checkpoints_total_limit: 5
+resume_ckpt: null
+
+deepspeed: "${dev_dir}/config/zero2.json"
+seed: 42
+
+training:
+  use_ema: False
+  use_lora: False
+  freeze_vision_encoder: False
+  mixed_precision: "bf16"
+
+  batch_size: 4
+  max_training_steps: 100_000
+  max_evaluation_steps: 100
+
+  optimizer_lr: 2.5e-5
+  optimizer_betas: [0.9, 0.95]
+  optimizer_eps: 1e-8
+  optimizer_weight_decay: 1e-10
+
+  scheduler_warmup_steps: 1_000
+  scheduler_decay_steps: 80_000
+  scheduler_decay_lr: 2.5e-6
+
+  grad_accumulation_steps: 1
+  max_grad_norm: 1.0
+  train_frequency: 50
+  ckpt_frequency: 10_000
+  eval_frequency: 5_000
+
+  is_knowledge_insulation: False
+  pi05: True
+  vis_attn: True
+  add_extra_token: False
+  add_image_token: False
+  add_prior: False
+  weighted_sample: False
+
+model:
+  pretrained_model_path: "${dev_dir}/pretrain/pi05_base"
+  action_expert_path: "${dev_dir}/pretrain/pi05_base"
+  tokenizer_model_path: "${dev_dir}/google/paligemma-3b-pt-224"
+
+dataloader:
+  _target_: torch.utils.data.DataLoader
+  batch_size: ${training.batch_size}
+  shuffle: True
+  num_workers: 4
+  pin_memory: True
+  persistent_workers: True
+
+dataloader_val:
+  _target_: torch.utils.data.DataLoader
+  batch_size: ${training.batch_size}
+  shuffle: False
+  num_workers: 4
+  pin_memory: True
+  persistent_workers: True
+
+co_training:
+  vlm_training: False
+  action_training: True
+
+data_3d: False
+statistics_path_6d_dataset: "${dev_dir}/bin_stats/nonuniform_bins.pkl"
+max_norm_6d_dataset: False
+uniform_mapping_6d_dataset: False
+depth_full_prob: 0.5
+depth_sparse_prob: 0.0
+ray_prob: 0.5
+neg_prob: 0.1
+
+dataset:
+  type: hdf5
+  hdf5_dir: ${oc.env:ROBOTWIN_HDF5_DIR}
+  action_type: "qpos"
+  image_aug: True
+  head_camera_randomcrop_aug: False
+  cond_mask_prob: 0.0
+  cam_ext_mask_prob: -1.0
+  use_hdf5: True
+  img_history_size: 1
+  action_chunk_size: 48
+  state_dim: 32
+  num_cameras: 3
+  image_size: 224
+  auto_adjust_image_brightness: False
+  num_video_frames: 8
+  video_height: 384
+  video_width: 320
+
+  xtrainer:
+    _target_: data.ds_raw.robotwin.HDF5VLADataset
+    sample_weights:
+      robotwin_processed: 1.0
+      robotwin_processed_random: 10.0
+
+  dataset_list:
+    - ${dataset.xtrainer}
+
+  # This file contains qpos_min/max for eval and derived qpos_mean/std
+  # (midpoint/half-range) so the unchanged shared loader applies the same
+  # min-max mapping during training.
+  mean_std_path: ${oc.env:PI05_NORM_PATH}

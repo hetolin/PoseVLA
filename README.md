@@ -9,7 +9,7 @@
 [![HF Stage-1](https://img.shields.io/badge/🤗_HuggingFace-Stage--1-ffd21e)](https://huggingface.co/hetolin/PoseVLA-stage1)
 [![ModelScope Robotwin](https://img.shields.io/badge/ModelScope-Robotwin-624aff)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files)
 
-[\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](docs/PRETRAIN.md) [\[🤖 Post-train (Robotwin)\]](docs/POSTTRAIN.md) [\[🕹 RoboTwin Eval\]](robotwin/PoseVLA/README.md) [\[🐛 Troubleshooting\]](docs/PRETRAIN.md#-troubleshooting)
+[\[🚀 Quick Start\]](#-quick-start) [\[🌟 Pre-train\]](docs/PRETRAIN.md) [\[🤖 Post-train (Robotwin)\]](docs/POSTTRAIN.md) [\[π0.5 Baseline\]](pi05_baseline/README.md) [\[🕹 RoboTwin Eval\]](robotwin/PoseVLA/README.md) [\[🐛 Troubleshooting\]](docs/PRETRAIN.md#-troubleshooting)
 
 <img src="assets/teaser.png" width="100%" />
 
@@ -18,6 +18,7 @@
 ---
 
 ## News 🚀🚀🚀
+- `2026/08`: Release the runnable [**PI0.5 RoboTwin baseline**](pi05_baseline/README.md) with isolated training and evaluation entries; the validated checkpoint is available on [ModelScope](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-pi05-robotwin).
 - `2026/08`: Release **3D Grounding inference script** (`infer_grounding3d.py`) — supports real-world RGB-D input and HDF5 data for open-vocabulary 3D object grounding.
 - `2026/08`: Upload pretrained PoseVLA Stage-1 checkpoint to [Hugging Face](https://huggingface.co/hetolin/PoseVLA-stage1).
 - `2026/06`: Initial release of **PoseVLA**: supports Omni3D / Omni6D / BOP / GraspClutter6D for 3D tasks and Agibot / InternData-A1 for robot actions.
@@ -45,6 +46,7 @@ PoseVLA is split into two training stages, each with its own document:
 | **Pre-train** (joint VLM + Action on large-scale data) | [train_pretrain.py](train_pretrain.py) | [config/base.yaml](config/base.yaml) | [docs/PRETRAIN.md](docs/PRETRAIN.md) |
 | **Robotwin data conversion** (raw → HDF5 + normalization) | [utils/process_data_all.py](utils/process_data_all.py) | [config/dataset/robotwin.yaml](config/dataset/robotwin.yaml) | [docs/ROBOTWIN_DATA.md](docs/ROBOTWIN_DATA.md) |
 | **Post-train / Fine-tune** (Robotwin and other downstream robots) | [train_posttrain.py](train_posttrain.py) | [config/base_posttrain.yaml](config/base_posttrain.yaml) | [docs/POSTTRAIN.md](docs/POSTTRAIN.md) |
+| **PI0.5 RoboTwin baseline** (14-D qpos train + eval) | [pi05_baseline/train.py](pi05_baseline/train.py) | [pi05_baseline/config/train.yaml](pi05_baseline/config/train.yaml) | [pi05_baseline/README.md](pi05_baseline/README.md) · [Checkpoint](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-pi05-robotwin) |
 | **3D Grounding Inference** (real-world RGB-D / HDF5) | [infer_grounding3d.py](infer_grounding3d.py) | [config/base.yaml](config/base.yaml) | [below](#-3d-grounding-inference) |
 | **RoboTwin simulation eval** | [robotwin/PoseVLA/eval_policy.py](robotwin/PoseVLA/eval_policy.py) | [robotwin/PoseVLA/deploy_policy.yml](robotwin/PoseVLA/deploy_policy.yml) | [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md) |
 
@@ -229,6 +231,7 @@ W&B auto-login: the script writes `/root/.netrc` — replace `API_KEY` with your
 
 - For **pre-training** the PoseVLA backbone on large-scale 3D + action data, follow [docs/PRETRAIN.md](docs/PRETRAIN.md).
 - For **post-training / fine-tuning** on RoboTwin (or your own robot), follow [docs/POSTTRAIN.md](docs/POSTTRAIN.md).
+- For the isolated **PI0.5 RoboTwin baseline**, follow [pi05_baseline/README.md](pi05_baseline/README.md).
 - For **simulation evaluation** on RoboTwin, follow [robotwin/PoseVLA/README.md](robotwin/PoseVLA/README.md).
 
 ---
@@ -273,6 +276,7 @@ The script will:
 - [x] Release the Robotwin post-training entry (`train_posttrain.py`) and RoboTwin deployment scripts.
 - [x] Release PoseVLA pretrain/posttrain checkpoints: [Stage-1 (HuggingFace)](https://huggingface.co/hetolin/PoseVLA-stage1) | [Robotwin (ModelScope)](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-robotwin/files).
 - [x] Release 3D grounding inference script ([`infer_grounding3d.py`](infer_grounding3d.py)) for real-world RGB-D input.
+- [x] Release the runnable [PI0.5 RoboTwin baseline](pi05_baseline/README.md) with training, evaluation, and a [ModelScope checkpoint](https://www.modelscope.ai/models/hanyangyu1021/PoseVLA-pi05-robotwin).
 
 <details>
 <summary><b>🙋 FAQs</b></summary>
